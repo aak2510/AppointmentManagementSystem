@@ -2,7 +2,76 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Hero Section -->
+<section class="jumbotron text-center">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 order-md-2">
+                <img src="~/images/LogoW.png" alt="Main Image" class="img-fluid mb-2">
+            </div>
+            <div class="col-md-6 order-md-1">
+                <h1 class="display-4">Welcome to Appointify</h1>
+                <p class="lead mb-5">Effortlessly manage your appointments with our intuitive system.</p>
+                <p>Are you tired of the hassle of manually scheduling appointments? Appointify is here to simplify your life. Our intuitive platform streamlines the appointment booking process, allowing you to focus on what matters most – serving your clients.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="container text-center py-5">
+    <h2 class="mb-5">Key Features</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="~/images/Appointment.png" alt="Easy Scheduling" class="img-fluid mb-3">
+            <h3>Easy Scheduling</h3>
+            <p>Efficiently schedule appointments with our user-friendly interface. Say goodbye to double bookings and scheduling conflicts.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="~/images/Notification.png" alt="Notification" class="img-fluid mb-3">
+            <h3>Notification</h3>
+            <p>Receive timely reminders and notifications for upcoming appointments. Never miss an important meeting again.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="~/images/Secure.png" alt="Secure" class="img-fluid mb-3">
+            <h3>Secure</h3>
+            <p>Your data is securely stored and protected. Rest assured that your sensitive information is safe with us.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="container-fluid bg-light py-5">
+    <div class="container text-center">
+        <h2 class="mb-5">What Our Customers Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text">"Appointify has simplified my scheduling process and saved me a lot of time. Highly recommended!"</p>
+                        <p class="font-weight-bold">- Ted Singleton</p>
+                        <p class="star-rating">&#9733;&#9733;&#9733;&#9733;&#9734;</p> <!-- 4-star rating -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text">"I love how easy it is to set up appointments and receive reminders. Appointify has made my life so much easier."</p>
+                        <p class="font-weight-bold">- Trevor Smith</p>
+                        <p class="star-rating">&#9733;&#9733;&#9733;&#9733;&#9733;</p> <!-- 5-star rating -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-text">"The security features of Appointify give me peace of mind knowing that my data is safe."</p>
+                        <p class="font-weight-bold">- Cristiano Ronaldo</p>
+                        <p class="star-rating">&#9733;&#9733;&#9733;&#9733;&#9734;</p> <!-- 4-star rating -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
