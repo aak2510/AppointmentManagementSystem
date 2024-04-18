@@ -2,9 +2,11 @@
 
 @{
     ViewData["Title"] = "Index";
+    string userId = Context.User.Identity.Name;
 }
 
 <h1>Index</h1>
+<h2>Current user : @userId</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -19,7 +21,7 @@
                 @Html.DisplayNameFor(model => model.AppointmentTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+                @Html.DisplayNameFor(model => model.UserEmail)
             </th>
             <th></th>
         </tr>
@@ -34,7 +36,7 @@
                 @Html.DisplayFor(modelItem => item.AppointmentTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserId)
+                    @Html.DisplayFor(modelItem => item.UserEmail)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a> |

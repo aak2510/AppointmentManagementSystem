@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace AppointmentManagementSystem.Controllers
 {
@@ -15,16 +16,27 @@ namespace AppointmentManagementSystem.Controllers
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        //private string _UserId;
 
         public AppointmentsController(ApplicationDbContext context)
         {
             _context = context;
+            //_UserId = context.Users.FirstOrDefault().Id;
         }
 
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.appointments.ToListAsync());
+            // Retrieve the current user's ID
+            string userEmail = User.Identity.Name;
+
+            // Retrieve appointments for the current user
+            var userAppointments = await _context.appointments
+                .Where(a => a.UserEmail == userEmail)
+                .ToListAsync();
+
+            return View(userAppointments);
+            //return View(await _context.appointments.ToListAsync());
         }
 
         // GET: Appointments/Details/5

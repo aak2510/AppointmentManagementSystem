@@ -19,6 +19,7 @@ public class Appointment
     public DateTime AppointmentTime { get; set; }
 
     [Required]
-    [Display(Name = "User Id")]
-    public int UserId { get; set; }
+    [DataType(DataType.EmailAddress)]
+    [Display(Name = "User Email")]
+    public string UserEmail { get; set; }
 }

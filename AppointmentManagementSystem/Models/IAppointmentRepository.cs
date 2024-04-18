@@ -3,6 +3,6 @@
 public interface IAppointmentRepository
 {
     IEnumerable<Appointment> AllAppointment { get; }
-    Appointment? GetAppointmentById(int pieId);
+    Appointment? GetAppointmentById(int appointmentId);
     IEnumerable<Appointment> SearchAppointments(string searchQuery);
 }
