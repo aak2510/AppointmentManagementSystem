@@ -12,24 +12,21 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AppointmentId" />
+            <div class="form-group">
+                <label asp-for="UserEmail" class="control-label"></label>
+                <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
+@*              <input asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly /> *@
+            </div>
             <div class="form-group">
                 <label asp-for="AppointmentDate" class="control-label"></label>
-                <input asp-for="AppointmentDate" class="form-control" />
+                <input asp-for="AppointmentDate" class="form-control"  value="@DateTime.Now.Date" />
                 <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AppointmentTime" class="control-label"></label>
-                <input asp-for="AppointmentTime" class="form-control" />
+                <input asp-for="AppointmentTime" class="form-control" value="@DateTime.Now.TimeOfDay" />
                 <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-            </div>
-@*             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
-                <input asp-for="UserEmail" class="form-control" />
-                <span asp-validation-for="UserEmail" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="UserEmail" class="control-label">Email</label>
-                <input asp-for="UserEmail" class="form-control" readonly />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
