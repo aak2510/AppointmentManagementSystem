@@ -2,11 +2,9 @@
 
 @{
     ViewData["Title"] = "Index";
-    string userId = Context.User.Identity.Name;
 }
 
 <h1>Index</h1>
-<h2>Current user : @userId</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -21,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.AppointmentTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserEmail)
+                Name
             </th>
             <th></th>
         </tr>
@@ -36,7 +34,18 @@
                 @Html.DisplayFor(modelItem => item.AppointmentTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
+                @{
+                    // Retrieve user's phone number based on their email
+                    var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                        var user = await userManager.FindByEmailAsync(item.UserEmail);
+                    if (user != null)
+                    {
+                        <p>@user.FirstName @user.LastName</p>
+                    } else
+                    {
+                        <p>N/A</p>
+                    }
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a> |

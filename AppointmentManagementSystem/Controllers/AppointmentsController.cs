@@ -60,7 +60,7 @@ namespace AppointmentManagementSystem.Controllers
 
             var appointment = await _context.appointments
                 .FirstOrDefaultAsync(m => m.AppointmentId == id);
-            if (appointment == null || appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+            if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace AppointmentManagementSystem.Controllers
 
 
             var appointment = await _context.appointments.FindAsync(id);
-            if (appointment == null || appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+            if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
                 return NotFound();
             }
@@ -115,7 +115,7 @@ namespace AppointmentManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
-            if (appointment == null || appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+            if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
                 return NotFound();
             }
@@ -153,7 +153,7 @@ namespace AppointmentManagementSystem.Controllers
 
             var appointment = await _context.appointments
                 .FirstOrDefaultAsync(m => m.AppointmentId == id);
-            if (appointment == null || appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+            if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
                 return NotFound();
             }
@@ -167,7 +167,7 @@ namespace AppointmentManagementSystem.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var appointment = await _context.appointments.FindAsync(id);
-            if (appointment == null || appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+            if (appointment != null && (appointment.UserEmail == User.Identity.Name || User.Identity.Name == "admin@admin.com"))
             {
                 _context.appointments.Remove(appointment);
             }
