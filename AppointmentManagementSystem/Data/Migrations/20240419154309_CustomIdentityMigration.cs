@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppointmentManagementSystem.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AppointmentMigration : Migration
+    public partial class CustomIdentityMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

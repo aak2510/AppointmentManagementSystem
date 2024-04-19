@@ -1,10 +1,11 @@
-﻿using AppointmentManagementSystem.Models;
+﻿using AppointmentManagementSystem.Areas.Identity.Data;
+using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManagementSystem.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<AppUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -12,4 +13,10 @@ public class ApplicationDbContext : IdentityDbContext
     }
 
     public DbSet<Appointment> appointments { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+    }
+
 }

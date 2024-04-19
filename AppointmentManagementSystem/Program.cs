@@ -1,3 +1,4 @@
+using AppointmentManagementSystem.Areas.Identity.Data;
 using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,7 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -57,43 +58,43 @@ public class Program
 
         app.MapRazorPages();
 
-        //seeding data
-        using (var scope = app.Services.CreateScope())
-        {
-            //seeding initial sata into application
-            // - roles
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(); //can grab an instance of this using dependency injection
-            var roles = new[] { "Admin", "user" }; //CHANGE THIS TO "User"
+        ////seeding data
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    //seeding initial sata into application
+        //    // - roles
+        //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(); //can grab an instance of this using dependency injection
+        //    var roles = new[] { "Admin", "User" }; //CHANGE THIS TO "User"
 
-            foreach (var role in roles)
-            {
-                //if no roles provided create roles
-                if (!await roleManager.RoleExistsAsync(role))
-                    await roleManager.CreateAsync(new IdentityRole(role));
-            }
-        }
+        //    foreach (var role in roles)
+        //    {
+        //        //if no roles provided create roles
+        //        if (!await roleManager.RoleExistsAsync(role))
+        //            await roleManager.CreateAsync(new IdentityRole(role));
+        //    }
+        //}
 
-        using (var scope = app.Services.CreateScope())
-        {
-            //seeding initial sata into application
-            // - accounts
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>(); //can grab an instance of this using dependency injection
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    //seeding initial sata into application
+        //    // - accounts
+        //    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(); //can grab an instance of this using dependency injection
 
-            string email = "admin@admin.com";
-            string password = "Secure@2"; //Secrets and sha256 hashing needed here
+        //    string email = "admin@admin.com";
+        //    string password = "Secure@2"; //Secrets and sha256 hashing needed here
 
-            if(await userManager.FindByEmailAsync(email) == null)
-            {
-                var user = new IdentityUser(email);
-                user.UserName = email;
-                user.Email = email;
-                user.EmailConfirmed = true;
+        //    if(await userManager.FindByEmailAsync(email) == null)
+        //    {
+        //        var user = new AppUser(email);
+        //        user.UserName = email;
+        //        user.Email = email;
+        //        user.EmailConfirmed = true;
 
-                await userManager.CreateAsync(user,password);
+        //        await userManager.CreateAsync(user,password);
 
-                await userManager.AddToRoleAsync(user,"Admin");
-            }
-        }
+        //        await userManager.AddToRoleAsync(user,"Admin");
+        //    }
+        //}
 
         //seeding the appointments
         DbInitializer.Seed(app);

@@ -1,8 +1,9 @@
 ﻿@using AppointmentManagementSystem
 @using AppointmentManagementSystem.Models
+@using AppointmentManagementSystem.Areas.Identity.Data
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

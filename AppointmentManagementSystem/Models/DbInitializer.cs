@@ -1,5 +1,7 @@
-﻿using AppointmentManagementSystem.Data;
+﻿using AppointmentManagementSystem.Areas.Identity.Data;
+using AppointmentManagementSystem.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace AppointmentManagementSystem.Models;
 
@@ -35,41 +37,96 @@ public static class DbInitializer
         //like phone, email, password, Role
 
         ////seeding data
-        //using (var scope = applicationBuilder.ApplicationServices.CreateScope())
-        //{
-        //    //seeding initial sata into application
-        //    // - roles
-        //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(); //can grab an instance of this using dependency injection
-        //    var roles = new[] { "Admin", "user" };
+        using (var scope = applicationBuilder.ApplicationServices.CreateScope())
+        {
+            //seeding initial sata into application
+            // - roles
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(); //can grab an instance of this using dependency injection
+            var roles = new[] { "Admin", "User" };
 
-        //    foreach (var role in roles)
-        //    {
-        //        //if no roles provided create roles
-        //        if (!await roleManager.RoleExistsAsync(role))
-        //            await roleManager.CreateAsync(new IdentityRole(role));
-        //    }
-        //}
+            foreach (var role in roles)
+            {
+                //if no roles provided create roles
+                if (!await roleManager.RoleExistsAsync(role))
+                    await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
 
-        //using (var scope = applicationBuilder.ApplicationServices.CreateScope())
-        //{
-        //    //seeding initial sata into application
-        //    // - accounts
-        //    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>(); //can grab an instance of this using dependency injection
+        using (var scope = applicationBuilder.ApplicationServices.CreateScope())
+        {
+            //seeding initial sata into application
+            // - accounts
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(); //can grab an instance of this using dependency injection
 
-        //    string email = "admin@admin.com";
-        //    string password = "Secure@2"; //Env variables?
+            DbUserInfo[] dbUsers = new DbUserInfo[]
+            {
+                new DbUserInfo
+                {
+                    FirstName = "Admin",
+                    LastName = "User",
+                    PhoneNumber = "1234567890",
+                    Role = "Admin",
+                    Email = "admin@admin.com",
+                    Password = "Secure@1"
+                },
+                new DbUserInfo
+                {
+                    FirstName = "Test",
+                    LastName = "User",
+                    PhoneNumber = "9876543210",
+                    Role = "User",
+                    Email = "test@test.com",
+                    Password = "Secure@2"
+                },
+                new DbUserInfo
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    PhoneNumber = "2012345678",
+                    Role = "User",
+                    Email = "email@email.com",
+                    Password = "Secure@3"
+                }
+            };
 
-        //    if (await userManager.FindByEmailAsync(email) == null)
-        //    {
-        //        var user = new IdentityUser(email);
-        //        user.UserName = email;
-        //        user.Email = email;
-        //        user.EmailConfirmed = true;
+            foreach (var newDbUser in dbUsers)
+            {
+                if (await userManager.FindByEmailAsync(newDbUser.Email) == null)
+                {
+                    var user = new AppUser
+                    {
 
-        //        await userManager.CreateAsync(user, password);
+                        UserName = newDbUser.Email,
+                        Email = newDbUser.Email,
+                        EmailConfirmed = true,
+                        FirstName = newDbUser.FirstName,
+                        LastName = newDbUser.LastName,
+                        PhoneNumber = newDbUser.PhoneNumber
+                    };
 
-        //        await userManager.AddToRoleAsync(user, "Admin");
-        //    }
-        //}
+                    var result = await userManager.CreateAsync(user, newDbUser.Password);
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, newDbUser.Role);
+                    } else
+                    {
+                        // Handle error
+                        throw new Exception($"Error creating seeded user data");
+                    }
+                }
+            }
+        }
     }
+}
+
+public class DbUserInfo
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Role { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+
 }

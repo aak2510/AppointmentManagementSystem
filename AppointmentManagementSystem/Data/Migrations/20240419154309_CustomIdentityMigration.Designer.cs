@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240418184239_AppointmentMigration")]
-    partial class AppointmentMigration
+    [Migration("20240419154309_CustomIdentityMigration")]
+    partial class CustomIdentityMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
