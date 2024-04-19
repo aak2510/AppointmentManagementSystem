@@ -80,7 +80,7 @@ public class Program
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>(); //can grab an instance of this using dependency injection
 
             string email = "admin@admin.com";
-            string password = "Secure@2"; //Env variables?
+            string password = "Secure@2"; //Secrets and sha256 hashing needed here
 
             if(await userManager.FindByEmailAsync(email) == null)
             {

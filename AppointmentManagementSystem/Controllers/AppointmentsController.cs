@@ -9,6 +9,7 @@ using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentManagementSystem.Controllers
 {
@@ -70,7 +71,8 @@ namespace AppointmentManagementSystem.Controllers
         // GET: Appointments/Create
         public IActionResult Create()
         {
-            return View();
+            var appointment = new Appointment() { UserEmail = User.Identity.Name };
+            return View(appointment);
         }
 
         // POST: Appointments/Create
@@ -78,7 +80,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AppointmentId,AppointmentDate,AppointmentTime,UserId")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind($"AppointmentId,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -97,8 +99,9 @@ namespace AppointmentManagementSystem.Controllers
                 return NotFound();
             }
 
+
             var appointment = await _context.appointments.FindAsync(id);
-            if (appointment == null)
+            if (appointment == null || appointment.UserEmail != User.Identity.Name)
             {
                 return NotFound();
             }
@@ -110,7 +113,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentDate,AppointmentTime,UserId")] Appointment appointment)
+        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
             if (id != appointment.AppointmentId)
             {
