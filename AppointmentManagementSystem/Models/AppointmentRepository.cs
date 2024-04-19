@@ -2,11 +2,14 @@
 
 namespace AppointmentManagementSystem.Models;
 
+//Repository design pattern
 public class AppointmentRepository : IAppointmentRepository
 {
+
     private readonly ApplicationDbContext _context;
 
-    public AppointmentRepository(ApplicationDbContext context)
+    // dependency injected db context
+    public AppointmentRepository(ApplicationDbContext context) 
     {
         _context = context;
     }

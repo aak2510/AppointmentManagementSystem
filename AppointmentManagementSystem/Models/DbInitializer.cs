@@ -1,11 +1,12 @@
 ﻿using AppointmentManagementSystem.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentManagementSystem.Models;
 
 
 public static class DbInitializer
 {
-    public static void Seed(IApplicationBuilder applicationBuilder)
+    public static async void Seed(IApplicationBuilder applicationBuilder)
     {
         ApplicationDbContext context = applicationBuilder.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -27,5 +28,48 @@ public static class DbInitializer
         }
 
         context.SaveChanges();
+
+        //Should seed the data for 3 base accounts
+        //1 admin and 2 users
+        //this should make use of a users class to hold stuff to store
+        //like phone, email, password, Role
+
+        ////seeding data
+        //using (var scope = applicationBuilder.ApplicationServices.CreateScope())
+        //{
+        //    //seeding initial sata into application
+        //    // - roles
+        //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>(); //can grab an instance of this using dependency injection
+        //    var roles = new[] { "Admin", "user" };
+
+        //    foreach (var role in roles)
+        //    {
+        //        //if no roles provided create roles
+        //        if (!await roleManager.RoleExistsAsync(role))
+        //            await roleManager.CreateAsync(new IdentityRole(role));
+        //    }
+        //}
+
+        //using (var scope = applicationBuilder.ApplicationServices.CreateScope())
+        //{
+        //    //seeding initial sata into application
+        //    // - accounts
+        //    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>(); //can grab an instance of this using dependency injection
+
+        //    string email = "admin@admin.com";
+        //    string password = "Secure@2"; //Env variables?
+
+        //    if (await userManager.FindByEmailAsync(email) == null)
+        //    {
+        //        var user = new IdentityUser(email);
+        //        user.UserName = email;
+        //        user.Email = email;
+        //        user.EmailConfirmed = true;
+
+        //        await userManager.CreateAsync(user, password);
+
+        //        await userManager.AddToRoleAsync(user, "Admin");
+        //    }
+        //}
     }
 }

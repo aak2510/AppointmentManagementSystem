@@ -13,6 +13,7 @@ using System.Security.Claims;
 namespace AppointmentManagementSystem.Controllers
 {
     [Authorize]
+    //[Authorize(Roles = "User")]
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -29,14 +30,23 @@ namespace AppointmentManagementSystem.Controllers
         {
             // Retrieve the current user's ID
             string userEmail = User.Identity.Name;
+            if(userEmail == null)
+            {
+                return NotFound();
+            }
+            if(userEmail == "admin@admin.com")
+            {
+                return View(await _context.appointments.ToListAsync());
+            }
+            else
+            {
+                // Retrieve appointments for the current user
+                var userAppointments = await _context.appointments
+                    .Where(a => a.UserEmail == userEmail)
+                    .ToListAsync();
 
-            // Retrieve appointments for the current user
-            var userAppointments = await _context.appointments
-                .Where(a => a.UserEmail == userEmail)
-                .ToListAsync();
-
-            return View(userAppointments);
-            //return View(await _context.appointments.ToListAsync());
+                return View(userAppointments);
+            }
         }
 
         // GET: Appointments/Details/5
