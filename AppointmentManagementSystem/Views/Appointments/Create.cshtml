@@ -14,9 +14,13 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AppointmentId" />
             <div class="form-group">
-                <label asp-for="UserEmail" class="control-label"></label>
                 <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
 @*              <input asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly /> *@
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentSubject" class="control-label"></label>
+                <input asp-for="AppointmentSubject" class="form-control" />
+                <span asp-validation-for="AppointmentSubject" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AppointmentDate" class="control-label"></label>

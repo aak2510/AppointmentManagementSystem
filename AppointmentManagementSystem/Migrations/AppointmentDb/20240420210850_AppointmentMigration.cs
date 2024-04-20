@@ -17,6 +17,7 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
                 {
                     AppointmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    AppointmentSubject = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AppointmentTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false)

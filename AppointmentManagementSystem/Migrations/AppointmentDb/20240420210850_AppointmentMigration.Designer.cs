@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentManagementSystem.Migrations.AppointmentDb
 {
     [DbContext(typeof(AppointmentDbContext))]
-    [Migration("20240420202704_AppointmentMigration")]
+    [Migration("20240420210850_AppointmentMigration")]
     partial class AppointmentMigration
     {
         /// <inheritdoc />
@@ -35,6 +35,10 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
 
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("AppointmentSubject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("AppointmentTime")
                         .HasColumnType("datetime2");

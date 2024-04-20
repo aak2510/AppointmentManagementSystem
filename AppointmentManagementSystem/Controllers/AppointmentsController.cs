@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentManagementSystem.Controllers
 {
@@ -80,7 +73,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind($"AppointmentId,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind($"AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {

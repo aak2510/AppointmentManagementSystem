@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentManagementSystem.Migrations
 {
     [DbContext(typeof(AccountDbContext))]
-    [Migration("20240420202558_AccountMigration")]
+    [Migration("20240420210234_AccountMigration")]
     partial class AccountMigration
     {
         /// <inheritdoc />

@@ -33,6 +33,10 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("AppointmentSubject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("AppointmentTime")
                         .HasColumnType("datetime2");
 

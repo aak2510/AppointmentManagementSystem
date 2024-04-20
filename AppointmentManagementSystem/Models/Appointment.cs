@@ -9,6 +9,11 @@ public class Appointment
     public int AppointmentId { get; set; }
 
     [Required]
+    [DataType(DataType.Text)]
+    [Display(Name = "Subject")]
+    public string AppointmentSubject { get; set; }
+
+    [Required]
     [DataType(DataType.Date)]
     [Display(Name = "Appointment Date")]
     public DateTime AppointmentDate { get; set; }
