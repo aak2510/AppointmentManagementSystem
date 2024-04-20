@@ -38,7 +38,10 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a> |
+                @if (User.Identity.Name == "admin@admin.com")
+                {
+                    <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
+                }
                 <a asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
             </td>
         </tr>
