@@ -14,9 +14,5 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
 
     public DbSet<Appointment> appointments { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-    }
 
 }
