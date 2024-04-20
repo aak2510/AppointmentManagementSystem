@@ -31,6 +31,7 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddAuthorization();
 
+        
 
         var app = builder.Build();
 
