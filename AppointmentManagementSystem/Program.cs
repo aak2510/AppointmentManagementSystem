@@ -15,18 +15,23 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var AppointmentDbConnection = builder.Configuration.GetConnectionString("AppointmentDbConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var AccountDbConnection = builder.Configuration.GetConnectionString("AccountDbConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
         //dependcy injected container
         builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+        builder.Services.AddDbContext<AppointmentDbContext>(options =>
+            options.UseSqlServer(AppointmentDbConnection));
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+        builder.Services.AddDbContext<AccountDbContext>(options =>
+            options.UseSqlServer(AccountDbConnection));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<AccountDbContext>();
 
         builder.Services.AddControllersWithViews();
 

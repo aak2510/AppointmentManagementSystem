@@ -5,14 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManagementSystem.Data;
 
-public class ApplicationDbContext : IdentityDbContext<AppUser>
+public class AccountDbContext : IdentityDbContext<AppUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public AccountDbContext(DbContextOptions<AccountDbContext> options)
         : base(options)
     {
+
     }
-
-    public DbSet<Appointment> appointments { get; set; }
-
 
 }

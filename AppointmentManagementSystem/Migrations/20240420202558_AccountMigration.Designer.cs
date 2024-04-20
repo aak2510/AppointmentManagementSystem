@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppointmentManagementSystem.Data.Migrations
+namespace AppointmentManagementSystem.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240420091404_FullTest")]
-    partial class FullTest
+    [DbContext(typeof(AccountDbContext))]
+    [Migration("20240420202558_AccountMigration")]
+    partial class AccountMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,29 +96,6 @@ namespace AppointmentManagementSystem.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AppointmentManagementSystem.Models.Appointment", b =>
-                {
-                    b.Property<int>("AppointmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
-
-                    b.Property<DateTime>("AppointmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("AppointmentTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AppointmentId");
-
-                    b.ToTable("appointments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

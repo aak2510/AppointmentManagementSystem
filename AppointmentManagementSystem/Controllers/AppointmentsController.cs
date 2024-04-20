@@ -17,10 +17,10 @@ namespace AppointmentManagementSystem.Controllers
     //[Authorize(Roles = "User")]
     public class AppointmentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppointmentDbContext _context;
         //private string _UserId;
 
-        public AppointmentsController(ApplicationDbContext context)
+        public AppointmentsController(AppointmentDbContext context)
         {
             _context = context;
             //_UserId = context.Users.FirstOrDefault().Id;

@@ -6,10 +6,10 @@ namespace AppointmentManagementSystem.Models;
 public class AppointmentRepository : IAppointmentRepository
 {
 
-    private readonly ApplicationDbContext _context;
+    private readonly AppointmentDbContext _context;
 
     // dependency injected db context
-    public AppointmentRepository(ApplicationDbContext context) 
+    public AppointmentRepository(AppointmentDbContext context) 
     {
         _context = context;
     }

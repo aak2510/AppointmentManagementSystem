@@ -10,11 +10,11 @@ public static class DbInitializer
 {
     public static async void Seed(IApplicationBuilder applicationBuilder)
     {
-        ApplicationDbContext context = applicationBuilder.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        AppointmentDbContext AppointmentContext = applicationBuilder.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<AppointmentDbContext>();
 
-        if (!context.appointments.Any())
+        if (!AppointmentContext.appointments.Any())
         {
-            context.AddRange
+            AppointmentContext.AddRange
             (
                 new Appointment { AppointmentDate = new DateTime(2024, 4, 17), AppointmentTime = new DateTime(2024, 1, 1, 9, 0, 0), UserEmail = "test@test.com" },
                 new Appointment { AppointmentDate = new DateTime(2024, 4, 18), AppointmentTime = new DateTime(2024, 1, 1, 10, 30, 0), UserEmail = "test@test.com" },
@@ -29,7 +29,7 @@ public static class DbInitializer
             );
         }
 
-        context.SaveChanges();
+        AppointmentContext.SaveChanges();
 
         //Should seed the data for 3 base accounts
         //1 admin and 2 users
