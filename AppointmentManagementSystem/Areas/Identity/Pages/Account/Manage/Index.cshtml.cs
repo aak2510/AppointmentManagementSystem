@@ -130,7 +130,8 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
             {
                 user.LastName = Input.LastName;
             }
-            await _userManager.UpdateNormalizedEmailAsync(user);
+
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
