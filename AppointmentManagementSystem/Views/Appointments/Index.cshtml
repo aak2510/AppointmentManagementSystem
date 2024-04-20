@@ -5,6 +5,12 @@
 }
 
 <h1>Index</h1>
+<p>
+    <form asp-action="Index" asp-controller="Appointments" method="post">
+        <button type="submit" name="showArchived" value="false" class="btn btn-primary">Upcoming Appointments</button>
+        <button type="submit" name="showArchived" value="true" class="btn btn-primary">Archived Appointments</button>
+    </form>
+</p>
 
 <p>
     <a asp-action="Create">Create New</a>

@@ -20,8 +20,10 @@ namespace AppointmentManagementSystem.Controllers
         }
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool showArchived = false)
         {
+
+
             // Retrieve the current user's ID
             string userEmail = User.Identity.Name;
             if(userEmail == null)
@@ -30,16 +32,29 @@ namespace AppointmentManagementSystem.Controllers
             }
             if(userEmail == "admin@admin.com")
             {
-                return View(await _context.appointments.ToListAsync());
+                if (showArchived)
+                    return View(await _context.archivedAppointments.ToListAsync());
+                else
+                    return View(await _context.appointments.ToListAsync());
             }
             else
             {
-                // Retrieve appointments for the current user
-                var userAppointments = await _context.appointments
+                if (showArchived)
+                {
+                    // Retrieve appointments for the current user
+                    var userAppointments = await _context.archivedAppointments
                     .Where(a => a.UserEmail == userEmail)
                     .ToListAsync();
-
-                return View(userAppointments);
+                    return View(userAppointments);
+                } 
+                else
+                {
+                    // Retrieve appointments for the current user
+                    var userAppointments = await _context.appointments
+                    .Where(a => a.UserEmail == userEmail)
+                    .ToListAsync();
+                    return View(userAppointments);
+                }
             }
         }
 

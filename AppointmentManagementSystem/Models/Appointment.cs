@@ -28,3 +28,14 @@ public class Appointment
     [Display(Name = "User Email")]
     public string UserEmail { get; set; }
 }
+
+
+public class UpcomingAppointment : Appointment
+{
+
+}
+
+public class ArchivedAppointment : Appointment
+{
+
+}

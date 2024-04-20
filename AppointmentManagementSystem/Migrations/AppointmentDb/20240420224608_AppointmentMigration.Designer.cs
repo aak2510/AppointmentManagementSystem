@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentManagementSystem.Migrations.AppointmentDb
 {
     [DbContext(typeof(AppointmentDbContext))]
-    [Migration("20240420221827_AppointmentMigration")]
+    [Migration("20240420224608_AppointmentMigration")]
     partial class AppointmentMigration
     {
         /// <inheritdoc />
@@ -24,33 +24,6 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AppointmentManagementSystem.Models.Appointment", b =>
-                {
-                    b.Property<int>("AppointmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
-
-                    b.Property<DateTime>("AppointmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AppointmentSubject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AppointmentTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AppointmentId");
-
-                    b.ToTable("Appointments", (string)null);
-                });
 
             modelBuilder.Entity("AppointmentManagementSystem.Models.ArchivedAppointment", b =>
                 {
@@ -77,6 +50,33 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
                     b.HasKey("AppointmentId");
 
                     b.ToTable("ArchivedAppointments", (string)null);
+                });
+
+            modelBuilder.Entity("AppointmentManagementSystem.Models.UpcomingAppointment", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AppointmentSubject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AppointmentTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AppointmentId");
+
+                    b.ToTable("Appointments", (string)null);
                 });
 #pragma warning restore 612, 618
         }
