@@ -1,6 +1,7 @@
 using AppointmentManagementSystem.Areas.Identity.Data;
 using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,8 +31,6 @@ public class Program
 
         builder.Services.AddRazorPages();
         builder.Services.AddAuthorization();
-
-        
 
         var app = builder.Build();
 

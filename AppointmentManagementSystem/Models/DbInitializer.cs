@@ -67,7 +67,7 @@ public static class DbInitializer
                     PhoneNumber = "1234567890",
                     Role = "Admin",
                     Email = "admin@admin.com",
-                    Password = "Secure@1"
+                    Password = "h493yz96x5XyxYTfAOZdey/rL0Qe2fmESwmldH9Ph9g="
                 },
                 new DbUserInfo
                 {
@@ -76,7 +76,7 @@ public static class DbInitializer
                     PhoneNumber = "9876543210",
                     Role = "User",
                     Email = "test@test.com",
-                    Password = "Secure@2"
+                    Password = "9NgIcEyeC6DRUQwjgD2NEJ4lRV6N3rkMVpndW9u0VOE="
                 },
                 new DbUserInfo
                 {
@@ -85,7 +85,7 @@ public static class DbInitializer
                     PhoneNumber = "2012345678",
                     Role = "User",
                     Email = "email@email.com",
-                    Password = "Secure@3"
+                    Password = "CYAW1j7zrwejgW47ldd36rgyOmUWHUJuwPRoOWvV5MM="
                 }
             };
 
