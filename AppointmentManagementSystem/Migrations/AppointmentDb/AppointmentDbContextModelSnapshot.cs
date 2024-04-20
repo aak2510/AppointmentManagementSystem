@@ -46,7 +46,34 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
 
                     b.HasKey("AppointmentId");
 
-                    b.ToTable("appointments");
+                    b.ToTable("Appointments", (string)null);
+                });
+
+            modelBuilder.Entity("AppointmentManagementSystem.Models.ArchivedAppointment", b =>
+                {
+                    b.Property<int>("AppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AppointmentSubject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AppointmentTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AppointmentId");
+
+                    b.ToTable("ArchivedAppointments", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -14,7 +14,7 @@ public static class DbInitializer
 
         if (!AppointmentContext.appointments.Any())
         {
-            AppointmentContext.AddRange
+            AppointmentContext.appointments.AddRange
             (
                 new Appointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 17), AppointmentTime = new DateTime(2024, 1, 1, 9, 0, 0), UserEmail = "test@test.com" },
                 new Appointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 18), AppointmentTime = new DateTime(2024, 1, 1, 10, 30, 0), UserEmail = "test@test.com" },
@@ -26,6 +26,18 @@ public static class DbInitializer
                 new Appointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 24), AppointmentTime = new DateTime(2024, 1, 1, 17, 15, 0), UserEmail = "email@email.com" },
                 new Appointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 25), AppointmentTime = new DateTime(2024, 1, 1, 9, 45, 0), UserEmail = "email@email.com" },
                 new Appointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 26), AppointmentTime = new DateTime(2024, 1, 1, 12, 0, 0), UserEmail = "email@email.com" }
+            );
+        }
+
+        if (!AppointmentContext.archivedAppointments.Any())
+        {
+            AppointmentContext.archivedAppointments.AddRange
+            (
+                new ArchivedAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2023, 4, 13), AppointmentTime = new DateTime(2024, 1, 1, 9, 0, 0), UserEmail = "test@test.com" },
+                new ArchivedAppointment { AppointmentSubject = "Conference", AppointmentDate = new DateTime(2022, 7, 20), AppointmentTime = new DateTime(2024, 1, 1, 14, 30, 0), UserEmail = "test@test.com" },
+                new ArchivedAppointment { AppointmentSubject = "Training", AppointmentDate = new DateTime(2021, 9, 5), AppointmentTime = new DateTime(2024, 1, 1, 11, 0, 0), UserEmail = "email@email.com" },
+                new ArchivedAppointment { AppointmentSubject = "Seminar", AppointmentDate = new DateTime(2020, 12, 12), AppointmentTime = new DateTime(2024, 1, 1, 9, 30, 0), UserEmail = "email@email.com" },
+                new ArchivedAppointment { AppointmentSubject = "Workshop", AppointmentDate = new DateTime(2019, 6, 25), AppointmentTime = new DateTime(2024, 1, 1, 12, 0, 0), UserEmail = "email@email.com" }
             );
         }
 

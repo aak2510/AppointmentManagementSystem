@@ -13,5 +13,13 @@ public class AppointmentDbContext : DbContext
     }
 
     public DbSet<Appointment> appointments { get; set; }
+    public DbSet<ArchivedAppointment> archivedAppointments { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Configure table name for current appointments
+        modelBuilder.Entity<Appointment>().ToTable("Appointments");
+        // Configure table name for archived appointments
+        modelBuilder.Entity<ArchivedAppointment>().ToTable("ArchivedAppointments");
+    }
 }

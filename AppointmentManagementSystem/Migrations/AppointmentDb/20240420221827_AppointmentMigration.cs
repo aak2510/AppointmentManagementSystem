@@ -12,7 +12,7 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "appointments",
+                name: "Appointments",
                 columns: table => new
                 {
                     AppointmentId = table.Column<int>(type: "int", nullable: false)
@@ -24,7 +24,23 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_appointments", x => x.AppointmentId);
+                    table.PrimaryKey("PK_Appointments", x => x.AppointmentId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArchivedAppointments",
+                columns: table => new
+                {
+                    AppointmentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppointmentSubject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AppointmentTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArchivedAppointments", x => x.AppointmentId);
                 });
         }
 
@@ -32,7 +48,10 @@ namespace AppointmentManagementSystem.Migrations.AppointmentDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "appointments");
+                name: "Appointments");
+
+            migrationBuilder.DropTable(
+                name: "ArchivedAppointments");
         }
     }
 }
