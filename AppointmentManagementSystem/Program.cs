@@ -4,6 +4,7 @@ using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentManagementSystem;
 
