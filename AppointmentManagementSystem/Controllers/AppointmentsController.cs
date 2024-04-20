@@ -73,7 +73,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind($"AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
+        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
         {
             if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
