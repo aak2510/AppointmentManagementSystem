@@ -14,6 +14,7 @@ public interface IAppointmentRepository
 
     public void AddAppointment(UpcomingAppointment? appointment);
 
+
     public void UpdateAppointment(UpcomingAppointment appointment);
 
     public void DeleteAppointmentById(int? id);

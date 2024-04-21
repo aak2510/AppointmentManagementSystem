@@ -58,25 +58,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)
         </dd>
-      
-
-       @*  <dt class="col-sm-2">
-            Phone Number
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                // Retrieve user's phone number based on their email
-                var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
-                var user = await userManager.FindByEmailAsync(Model.UserEmail);
-                if (user != null)
-                {
-                    @user.PhoneNumber
-                } else
-                {
-                    <p>N/A</p>
-                }
-            }
-        </dd> *@
     </dl>
 </div>
 <div>

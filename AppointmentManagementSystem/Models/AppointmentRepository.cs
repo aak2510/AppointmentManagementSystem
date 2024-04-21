@@ -66,20 +66,38 @@ public class AppointmentRepository : IAppointmentRepository
             if (archivedAppointment != null)
             {
                 _context.archivedAppointments.Remove(archivedAppointment);
+                _context.SaveChanges();
             }
-        } else
+        } 
+        else
         {
             var upcomingAppointment = _context.appointments.Find(id);
             if (upcomingAppointment != null)
             {
+                // Create a new ArchivedAppointment based on the upcomingAppointment
+                var archivedAppointment = new ArchivedAppointment
+                {
+                    UserEmail = upcomingAppointment.UserEmail,
+                    AppointmentSubject = upcomingAppointment.AppointmentSubject,
+                    AppointmentDate = upcomingAppointment.AppointmentDate,
+                    AppointmentTime = upcomingAppointment.AppointmentTime
+                };
+
+                // Add the archivedAppointment to the archivedAppointments DbSet
+                _context.archivedAppointments.Add(archivedAppointment);
+                _context.SaveChanges();
+
+                // Remove the upcomingAppointment from the appointments DbSet
                 _context.appointments.Remove(upcomingAppointment);
+                _context.SaveChanges();
             }
         }
-        _context.SaveChangesAsync();
     }
+
 
     public IEnumerable<Appointment> SearchAppointments(string searchQuery)
     {
         throw new NotImplementedException();
     }
+
 }
