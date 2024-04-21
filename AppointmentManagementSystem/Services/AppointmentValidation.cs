@@ -19,8 +19,10 @@ public static class AppointmentValidation
 
     public static bool IsUserInvalid(Appointment? appointment, ClaimsPrincipal? User)
     {
-        if (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+        if (appointment.UserEmail != User.Identity.Name && User.IsInRole("User"))
+        {
             return true;
+        }
         return false;
     }
 }

@@ -41,7 +41,7 @@ public class AppointmentsController : Controller
         }
 
         // Change this to admin role
-        if (userEmail == "admin@admin.com")
+        if (User.IsInRole("Admin"))
         {
             return View(await appointmentsContext.ToListAsync());
         }
@@ -207,7 +207,7 @@ public class AppointmentsController : Controller
         // Find the appointment by ID
         var appointment = await appointmentsContext.FirstOrDefaultAsync(m => m.AppointmentId == id);
 
-        if (appointment != null && (appointment.UserEmail == User.Identity.Name || User.Identity.Name == "admin@admin.com"))
+        if (appointment != null && (appointment.UserEmail == User.Identity.Name || User.IsInRole("Admin")))
         {
             // If the appointment is archived, remove it from archived appointments
             if (isArchived)

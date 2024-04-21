@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="AppointmentId" />
             @*If the Admin is logged in, then we need to display the email field for them to create and appointment*@
             @*Need to change this to RBAC*@
-            @if (User.Identity.Name == "admin@admin.com")
+            @if (User.IsInRole("Admin"))
             {
                 <div class="form-group">
                     <label asp-for="UserEmail" class="control-label"></label>
@@ -38,7 +38,7 @@
 
             <div class="form-group">
                 <label asp-for="AppointmentDate" class="control-label"></label>
-                @*value might not be needed here - unless we are looking to set defaults. Bring up in meeting.*@
+                @*Left in to avoid epoch timing*@
                 <input asp-for="AppointmentDate" class="form-control"  value="@DateTime.Now.Date" />
                 <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
