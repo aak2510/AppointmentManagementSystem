@@ -11,6 +11,7 @@ namespace AppointmentManagementSystem.Controllers
     public class AppointmentsController : Controller
     {
         private readonly AppointmentDbContext _context;
+        private bool _showingArchived = false;
         //private string _UserId;
 
         public AppointmentsController(AppointmentDbContext context)
@@ -22,7 +23,12 @@ namespace AppointmentManagementSystem.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index(bool showArchived = false)
         {
+            _showingArchived = showArchived;
+            ViewBag.ShowArchived = showArchived;
 
+            IQueryable<Appointment> appointmentsContext = _showingArchived ?
+                _context.archivedAppointments :
+                _context.appointments;
 
             // Retrieve the current user's ID
             string userEmail = User.Identity.Name;
@@ -32,29 +38,15 @@ namespace AppointmentManagementSystem.Controllers
             }
             if(userEmail == "admin@admin.com")
             {
-                if (showArchived)
-                    return View(await _context.archivedAppointments.ToListAsync());
-                else
-                    return View(await _context.appointments.ToListAsync());
+                return View(await appointmentsContext.ToListAsync());
             }
             else
             {
-                if (showArchived)
-                {
-                    // Retrieve appointments for the current user
-                    var userAppointments = await _context.archivedAppointments
-                    .Where(a => a.UserEmail == userEmail)
-                    .ToListAsync();
-                    return View(userAppointments);
-                } 
-                else
-                {
-                    // Retrieve appointments for the current user
-                    var userAppointments = await _context.appointments
-                    .Where(a => a.UserEmail == userEmail)
-                    .ToListAsync();
-                    return View(userAppointments);
-                }
+                // Retrieve appointments for the current user
+                var userAppointments = await appointmentsContext
+                .Where(a => a.UserEmail == userEmail)
+                .ToListAsync();
+                return View(userAppointments);
             }
         }
 
@@ -88,7 +80,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] UpcomingAppointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -121,7 +113,7 @@ namespace AppointmentManagementSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] Appointment appointment)
+        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] UpcomingAppointment appointment)
         {
             if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
             {
@@ -152,19 +144,29 @@ namespace AppointmentManagementSystem.Controllers
         }
 
         // GET: Appointments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool isArchived)
         {
+            ViewBag.ShowArchived = isArchived;
+
             if (id == null)
-            {
                 return NotFound();
+
+            IQueryable<Appointment> appointmentsContext = isArchived ?
+                _context.archivedAppointments :
+                _context.appointments;
+
+            var appointment = await appointmentsContext
+                .FirstOrDefaultAsync(m => m.AppointmentId == id);
+
+            if (appointment == null)
+            {
+                await Console.Out.WriteLineAsync($"{id}, {appointment}");
+                return NotFound();
+                
             }
 
-            var appointment = await _context.appointments
-                .FirstOrDefaultAsync(m => m.AppointmentId == id);
-            if (appointment == null || (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com"))
-            {
-                return NotFound();
-            }
+            if (appointment.UserEmail != User.Identity.Name && User.Identity.Name != "admin@admin.com")
+                return Unauthorized();
 
             return View(appointment);
         }
@@ -172,21 +174,45 @@ namespace AppointmentManagementSystem.Controllers
         // POST: Appointments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, bool isArchived)
         {
-            var appointment = await _context.appointments.FindAsync(id);
+            bool showArchived = isArchived;
+
+            // Determine the correct DbSet based on whether the appointment is archived or not
+            IQueryable<Appointment> appointmentsContext = isArchived ?
+                _context.archivedAppointments.Cast<Appointment>() :
+                _context.appointments.Cast<Appointment>();
+
+            // Find the appointment by ID
+            var appointment = await appointmentsContext.FirstOrDefaultAsync(m => m.AppointmentId == id);
+
             if (appointment != null && (appointment.UserEmail == User.Identity.Name || User.Identity.Name == "admin@admin.com"))
             {
-                _context.appointments.Remove(appointment);
+                // If the appointment is archived, remove it from archived appointments
+                if (isArchived)
+                {
+                    _context.archivedAppointments.Remove((ArchivedAppointment)appointment);
+                }
+                // If the appointment is not archived, remove it from upcoming appointments
+                else
+                {
+                    _context.appointments.Remove((UpcomingAppointment)appointment);
+                }
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // Redirect to the Index action after deletion, passing the showArchived parameter
+            return RedirectToAction(nameof(Index), new { showArchived = showArchived });
         }
 
         private bool AppointmentExists(int id)
         {
-            return _context.appointments.Any(e => e.AppointmentId == id);
+            IQueryable<Appointment> appointmentsContext = _showingArchived ?
+                _context.archivedAppointments :
+                _context.appointments;
+            return appointmentsContext.Any(e => e.AppointmentId == id);
         }
     }
 }
