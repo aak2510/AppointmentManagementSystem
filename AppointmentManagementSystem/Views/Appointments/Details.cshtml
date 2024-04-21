@@ -1,4 +1,5 @@
-﻿@model AppointmentManagementSystem.ViewModels.ViewModel
+﻿
+@model AppointmentManagementSystem.ViewModels.ViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -79,6 +80,9 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId">Edit</a> |
+    @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId">Edit</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

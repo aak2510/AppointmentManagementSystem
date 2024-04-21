@@ -5,7 +5,19 @@ public interface IAppointmentRepository
     /*An interface for Accessing appointments
      *Include: all apointments and filtering appointments by id and search queries */
 
-    IEnumerable<Appointment> AllAppointment { get; }
-    Appointment? GetAppointmentById(int appointmentId);
+    IEnumerable<UpcomingAppointment> AllUpcomingAppointments { get; }
+    IEnumerable<ArchivedAppointment> AllArchivedAppointments { get; }
+
+    
+    
+    public Appointment GetAppointmentById(int? id);
+
+    public void AddAppointment(UpcomingAppointment? appointment);
+
+    public void UpdateAppointment(UpcomingAppointment appointment);
+
+    public void DeleteAppointmentById(int? id);
+
+    //Appointment? GetAppointmentById(int? appointmentId);
     IEnumerable<Appointment> SearchAppointments(string searchQuery);
 }

@@ -1,8 +1,9 @@
-﻿@model IEnumerable<AppointmentManagementSystem.Models.Appointment>
+﻿@using AppointmentManagementSystem.Models.ArchiveState
+@model IEnumerable<AppointmentManagementSystem.Models.Appointment>
 
 @{
     ViewData["Title"] = "Index";
-    bool showArvchived = ViewBag.ShowArchived;
+    bool isViewingArchived = ArchiveStateSingleton.Instance.IsViewingArchivedAppointments;
 }
 
 <h1>Index</h1>
@@ -14,7 +15,7 @@
 </p>
 
 <p>
-    @if (!showArvchived)
+    @if (!isViewingArchived)
     {
         <a asp-action="Create">Create New</a>
     }
@@ -69,7 +70,7 @@
                     @Html.DisplayFor(modelItem => item.AppointmentSubject)
                 </td>
                 <td>
-                    @if (!showArvchived)
+                    @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
                     {
                         <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a>
                     }
@@ -78,7 +79,7 @@
                     {
                         <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
                     }
-                    <a asp-action="Delete" asp-route-id="@item.AppointmentId" asp-route-isArchived="@showArvchived">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
                 </td>
             </tr>
         }

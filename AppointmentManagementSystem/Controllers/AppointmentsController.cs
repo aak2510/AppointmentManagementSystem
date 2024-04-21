@@ -5,6 +5,7 @@ using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using AppointmentManagementSystem.Services;
 using AppointmentManagementSystem.ViewModels;
+using AppointmentManagementSystem.Models.ArchiveState;
 
 
 namespace AppointmentManagementSystem.Controllers;
@@ -13,80 +14,94 @@ namespace AppointmentManagementSystem.Controllers;
 //[Authorize(Roles = "User")]
 public class AppointmentsController : Controller
 {
-    private readonly AppointmentDbContext _context;
-    private readonly AccountDbContext _accountContext;
-    private bool _showingArchived = false;
+    private readonly IAppointmentRepository _appointmentRepository;
 
-    public AppointmentsController(AppointmentDbContext context, AccountDbContext accountContext)
+    private readonly AccountDbContext _accountContext;
+
+    public AppointmentsController(IAppointmentRepository appointmentRepository, AccountDbContext accountContext)
     {
-        _context = context;
+        _appointmentRepository = appointmentRepository;
         _accountContext = accountContext;
     }
 
-    // GET: Appointments
-    public async Task<IActionResult> Index(bool showArchived = false)
-    {
-        _showingArchived = showArchived;
-        ViewBag.ShowArchived = showArchived;
 
-        IQueryable<Appointment> appointmentsContext = _showingArchived ?
-            _context.archivedAppointments :
-            _context.appointments;
+    // GET: Appointments
+    public async Task<IActionResult> Index(bool? showArchived)
+    {
+        // Set the viewing archive state in the repository
+        if (showArchived.HasValue)
+        {
+            ArchiveStateSingleton.Instance.IsViewingArchivedAppointments = showArchived.Value;
+        }
 
         // Retrieve the current user's ID
         string userEmail = User.Identity.Name;
         if (userEmail == null)
-        {
             return NotFound();
-        }
 
-        // Change this to admin role
-        if (User.IsInRole("Admin"))
+        // Retrieve appointments based on whether to show archived or upcoming appointments
+        IEnumerable<Appointment> appointments;
+        if (ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
         {
-            var allAppointments = await appointmentsContext
-                .OrderBy(a => a.AppointmentDate)
-                .ThenBy(a => a.AppointmentTime)
-                .ToListAsync();
-            return View(allAppointments);
-        }
+            appointments = _appointmentRepository.AllArchivedAppointments;
+        } 
         else
         {
-            // Retrieve appointments for the current user
-            var userAppointments = await appointmentsContext
-            .Where(a => a.UserEmail == userEmail)
+            appointments = _appointmentRepository.AllUpcomingAppointments;
+        }
+
+        // If not admin, filter appointments for the current user
+        if (!User.IsInRole("Admin"))
+        {
+            appointments = appointments.Where(a => a.UserEmail == userEmail);
+        }
+
+        // Order appointments by date and time
+        appointments = appointments
             .OrderBy(a => a.AppointmentDate)
             .ThenBy(a => a.AppointmentTime)
-            .ToListAsync();
-            return View(userAppointments);
-        }
+            .ToList();
+
+        return View(appointments);
     }
+
+
+
+
+
 
     // GET: Appointments/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null) { return NotFound(); }
+        if (id == null)
+        {
+            return NotFound();
+        }
 
+        // Retrieve the appointment from the repository
+        var appointment = _appointmentRepository.GetAppointmentById(id);
+        if (appointment == null)
+        {
+            return NotFound();
+        }
 
-        var appointment = await _context.appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
+        // Check if the user is unauthorized to view the appointment
+        if (!User.IsInRole("Admin") && appointment.UserEmail != User.Identity.Name)
+        {
+            return Unauthorized();
+        }
 
-        // returns 404 not found if no appointments exist or 
-        if (AppointmentValidation.IsAppointmentNull(appointment)) { return NotFound(); }
-        // returns unauthorised 401 if the logged in user trys to access another persons appointment
-        // Unless the logged in user is the admin
-        if (AppointmentValidation.IsUserInvalid(appointment, User)) { return Unauthorized(); }
-
-
-
-        // Display the user information alongside the appointment information
-        // First find a user with the assoicated email
+        // Retrieve the associated user information
         var user = _accountContext.Users.FirstOrDefault(u => u.Email == appointment.UserEmail);
 
-        // If the appointment has no email or user registered, then it won't display anything
-        var viewModel = new ViewModel();
-        viewModel.UserAppointments = appointment;
-        viewModel.UserDetails = user;
-        return View(viewModel);
+        // If the appointment has no associated user, it won't display anything
+        var viewModel = new ViewModel
+        {
+            UserAppointments = appointment,
+            UserDetails = user
+        };
 
+        return View(viewModel);
     }
 
     // GET: Appointments/Create
@@ -110,8 +125,7 @@ public class AppointmentsController : Controller
         {
             if (_accountContext.Users.FirstOrDefault(u => u.Email == appointment.UserEmail) != null)
             {
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
+                _appointmentRepository.AddAppointment(appointment);
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -133,7 +147,7 @@ public class AppointmentsController : Controller
     {
         if (id == null) { return NotFound(); }
 
-        var appointment = await _context.appointments.FindAsync(id);
+        var appointment = _appointmentRepository.GetAppointmentById(id);
 
         if (AppointmentValidation.IsAppointmentNull(appointment)) { return NotFound(); }
         if (AppointmentValidation.IsUserInvalid(appointment, User)) { return Unauthorized(); }
@@ -155,8 +169,7 @@ public class AppointmentsController : Controller
         {
             try
             {
-                _context.Update(appointment);
-                await _context.SaveChangesAsync();
+                _appointmentRepository.UpdateAppointment(appointment);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -175,18 +188,12 @@ public class AppointmentsController : Controller
     }
 
     // GET: Appointments/Delete/5
-    public async Task<IActionResult> Delete(int? id, bool isArchived)
+    public async Task<IActionResult> Delete(int? id)
     {
-        ViewBag.ShowArchived = isArchived;
 
         if (id == null) { return NotFound(); }
 
-        IQueryable<Appointment> appointmentsContext = isArchived ?
-            _context.archivedAppointments :
-            _context.appointments;
-
-        var appointment = await appointmentsContext
-            .FirstOrDefaultAsync(m => m.AppointmentId == id);
+        var appointment = _appointmentRepository.GetAppointmentById(id);
         var user = await _accountContext.Users.FirstOrDefaultAsync(m => m.Email == appointment.UserEmail);
 
         if (AppointmentValidation.IsAppointmentNull(appointment)) { return NotFound(); }
@@ -201,44 +208,26 @@ public class AppointmentsController : Controller
     // POST: Appointments/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id, bool isArchived)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool showArchived = isArchived;
-
-        // Determine the correct DbSet based on whether the appointment is archived or not
-        IQueryable<Appointment> appointmentsContext = isArchived ?
-            _context.archivedAppointments.Cast<Appointment>() :
-            _context.appointments.Cast<Appointment>();
 
         // Find the appointment by ID
-        var appointment = await appointmentsContext.FirstOrDefaultAsync(m => m.AppointmentId == id);
+        var appointment = _appointmentRepository.GetAppointmentById(id);
 
         if (appointment != null && (appointment.UserEmail == User.Identity.Name || User.IsInRole("Admin")))
         {
-            // If the appointment is archived, remove it from archived appointments
-            if (isArchived)
-            {
-                _context.archivedAppointments.Remove((ArchivedAppointment)appointment);
-            }
-            // If the appointment is not archived, remove it from upcoming appointments
-            else
-            {
-                _context.appointments.Remove((UpcomingAppointment)appointment);
-            }
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
+            _appointmentRepository.DeleteAppointmentById(id);
         }
 
         // Redirect to the Index action after deletion, passing the showArchived parameter
-        return RedirectToAction(nameof(Index), new { showArchived = showArchived });
+        return RedirectToAction(nameof(Index));
     }
 
     private bool AppointmentExists(int id)
     {
-        IQueryable<Appointment> appointmentsContext = _showingArchived ?
-            _context.archivedAppointments :
-            _context.appointments;
-        return appointmentsContext.Any(e => e.AppointmentId == id);
+        _appointmentRepository.GetAppointmentById(id);
+        if (_appointmentRepository.GetAppointmentById(id) == null)
+            return false;
+        return true;
     }
 }

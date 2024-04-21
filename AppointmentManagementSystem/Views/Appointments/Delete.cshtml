@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Delete";
-    bool showArvchived = ViewBag.ShowArchived;
 }
 
 <h1>Delete</h1>
@@ -59,7 +58,7 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete" asp-route-isArchived="@showArvchived">
+    <form asp-action="Delete">
         <input type="hidden" asp-for="UserAppointments.AppointmentId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
