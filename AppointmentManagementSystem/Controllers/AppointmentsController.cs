@@ -28,6 +28,11 @@ public class AppointmentsController : Controller
     // GET: Appointments
     public async Task<IActionResult> Index(bool? showArchived)
     {
+        //Check for expired appointments
+        _appointmentRepository.CheckForExpiredAppointments();
+        
+
+
         // Set the viewing archive state in the repository
         if (showArchived.HasValue)
         {
@@ -64,11 +69,6 @@ public class AppointmentsController : Controller
 
         return View(appointments);
     }
-
-
-
-
-
 
     // GET: Appointments/Details/5
     public async Task<IActionResult> Details(int? id)

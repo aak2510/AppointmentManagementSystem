@@ -1,5 +1,6 @@
 ﻿using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models.ArchiveState;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManagementSystem.Models;
 
@@ -49,13 +50,13 @@ public class AppointmentRepository : IAppointmentRepository
     public void AddAppointment(UpcomingAppointment? appointment)
     {
         _context.appointments.Add(appointment);
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
     public void UpdateAppointment(UpcomingAppointment? appointment)
     {
         _context.appointments.Update(appointment);
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 
     public void DeleteAppointmentById(int? id)
@@ -74,30 +75,49 @@ public class AppointmentRepository : IAppointmentRepository
             var upcomingAppointment = _context.appointments.Find(id);
             if (upcomingAppointment != null)
             {
-                // Create a new ArchivedAppointment based on the upcomingAppointment
-                var archivedAppointment = new ArchivedAppointment
-                {
-                    UserEmail = upcomingAppointment.UserEmail,
-                    AppointmentSubject = upcomingAppointment.AppointmentSubject,
-                    AppointmentDate = upcomingAppointment.AppointmentDate,
-                    AppointmentTime = upcomingAppointment.AppointmentTime
-                };
-
-                // Add the archivedAppointment to the archivedAppointments DbSet
-                _context.archivedAppointments.Add(archivedAppointment);
-                _context.SaveChanges();
-
-                // Remove the upcomingAppointment from the appointments DbSet
-                _context.appointments.Remove(upcomingAppointment);
-                _context.SaveChanges();
+                DeleteAndArchive(upcomingAppointment);
             }
         }
     }
 
+    public void CheckForExpiredAppointments()
+    {
+        var currentDateTime = DateTime.Now; // Get current date and time
+        var expiredAppointments = _context.appointments
+            .Where(a => a.AppointmentDate.Date < currentDateTime.Date ||
+                (a.AppointmentDate.Date == currentDateTime.Date && a.AppointmentTime.TimeOfDay < currentDateTime.TimeOfDay))
+            .ToList();
+
+        foreach (var appointment in expiredAppointments)
+        {
+            DeleteAndArchive(appointment);
+        }
+    }
 
     public IEnumerable<Appointment> SearchAppointments(string searchQuery)
     {
         throw new NotImplementedException();
     }
 
+
+
+    private void DeleteAndArchive(UpcomingAppointment appointment)
+    {
+        // Create a new ArchivedAppointment based on the upcomingAppointment
+        var archivedAppointment = new ArchivedAppointment
+        {
+            UserEmail = appointment.UserEmail,
+            AppointmentSubject = appointment.AppointmentSubject,
+            AppointmentDate = appointment.AppointmentDate,
+            AppointmentTime = appointment.AppointmentTime
+        };
+
+        // Add the archivedAppointment to the archivedAppointments DbSet
+        _context.archivedAppointments.Add(archivedAppointment);
+        _context.SaveChanges();
+
+        // Remove the upcomingAppointment from the appointments DbSet
+        _context.appointments.Remove(appointment);
+        _context.SaveChanges();
+    }
 }

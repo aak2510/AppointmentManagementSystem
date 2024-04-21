@@ -14,11 +14,12 @@ public interface IAppointmentRepository
 
     public void AddAppointment(UpcomingAppointment? appointment);
 
-
     public void UpdateAppointment(UpcomingAppointment appointment);
 
     public void DeleteAppointmentById(int? id);
 
     //Appointment? GetAppointmentById(int? appointmentId);
     IEnumerable<Appointment> SearchAppointments(string searchQuery);
+
+    public void CheckForExpiredAppointments();
 }
