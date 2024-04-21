@@ -43,13 +43,15 @@ public class AppointmentsController : Controller
         // Change this to admin role
         if (userEmail == "admin@admin.com")
         {
-            return View(await appointmentsContext.ToListAsync());
+            var allAppointments = await appointmentsContext.OrderBy(a => a.AppointmentDate).ToListAsync();
+            return View(allAppointments);
         }
         else
         {
             // Retrieve appointments for the current user
             var userAppointments = await appointmentsContext
             .Where(a => a.UserEmail == userEmail)
+            .OrderBy(a => a.AppointmentDate)
             .ToListAsync();
             return View(userAppointments);
         }
