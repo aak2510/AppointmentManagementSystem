@@ -10,7 +10,7 @@ public class Appointment
 
     [Required]
     [DataType(DataType.Text)]
-    [Display(Name = "Subject")]
+    [Display(Name = "Appointment Subject/Reason")]
     public string AppointmentSubject { get; set; }
 
     [Required]
@@ -23,9 +23,11 @@ public class Appointment
     [Display(Name = "Appointment Time")]
     public DateTime AppointmentTime { get; set; }
 
+
+    // Required in order to link the user and the assoicated appointments
     [Required]
     [DataType(DataType.EmailAddress)]
-    [Display(Name = "User Email")]
+    [Display(Name = "Client Email")]
     public string UserEmail { get; set; }
 }
 

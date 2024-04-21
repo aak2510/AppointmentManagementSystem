@@ -4,6 +4,8 @@ using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using AppointmentManagementSystem.Services;
+using AppointmentManagementSystem.ViewModels;
+
 
 namespace AppointmentManagementSystem.Controllers;
 
@@ -12,11 +14,13 @@ namespace AppointmentManagementSystem.Controllers;
 public class AppointmentsController : Controller
 {
     private readonly AppointmentDbContext _context;
+    private readonly AccountDbContext _accountContext;
     private bool _showingArchived = false;
 
-    public AppointmentsController(AppointmentDbContext context)
+    public AppointmentsController(AppointmentDbContext context, AccountDbContext accountContext)
     {
         _context = context;
+        _accountContext = accountContext;
     }
 
     // GET: Appointments
@@ -31,11 +35,13 @@ public class AppointmentsController : Controller
 
         // Retrieve the current user's ID
         string userEmail = User.Identity.Name;
-        if(userEmail == null)
+        if (userEmail == null)
         {
             return NotFound();
         }
-        if(userEmail == "admin@admin.com")
+
+        // Change this to admin role
+        if (userEmail == "admin@admin.com")
         {
             return View(await appointmentsContext.ToListAsync());
         }
@@ -55,20 +61,34 @@ public class AppointmentsController : Controller
         if (id == null) { return NotFound(); }
 
 
-        var appointment = await _context.appointments
-            .FirstOrDefaultAsync(m => m.AppointmentId == id);
+        var appointment = await _context.appointments.FirstOrDefaultAsync(m => m.AppointmentId == id);
 
+        // returns 404 not found if no appointments exist or 
         if (AppointmentValidation.IsAppointmentNull(appointment)) { return NotFound(); }
+        // returns unauthorised 401 if the logged in user trys to access another persons appointment
+        // Unless the logged in user is the admin
         if (AppointmentValidation.IsUserInvalid(appointment, User)) { return Unauthorized(); }
 
-        return View(appointment);
+
+
+        // Display the user information alongside the appointment information
+        // First find a user with the assoicated email
+        var user = _accountContext.Users.FirstOrDefault(u => u.Email == appointment.UserEmail);
+
+        // If the appointment has no email or user registered, then it won't display anything
+        var viewModel = new ViewModel();
+        viewModel.UserAppointments = appointment;
+        viewModel.UserDetails = user;
+        return View(viewModel);
+
     }
 
     // GET: Appointments/Create
     public IActionResult Create()
     {
-        var appointment = new Appointment() { UserEmail = User.Identity.Name };
-        return View(appointment);
+        //var appointment = new Appointment() { UserEmail = User.Identity.Name };
+        //return View(appointment);
+        return View();
     }
 
     // POST: Appointments/Create
@@ -78,12 +98,27 @@ public class AppointmentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("AppointmentId,AppointmentSubject,AppointmentDate,AppointmentTime,UserEmail")] UpcomingAppointment appointment)
     {
+        // Clear the errors in case user trys to re-enter information
+        ModelState.Clear();
         if (ModelState.IsValid)
         {
-            _context.Add(appointment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (_accountContext.Users.FirstOrDefault(u => u.Email == appointment.UserEmail) != null)
+            {
+                _context.Add(appointment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
+
+        // If the system admin trys to create an appointment for an unregistered user,
+        // we will prompt them to make the user register their details first
+        string errorMessage = "No registered email found. " +
+                              "Please check the email entered is correct. " +
+                              "If so, please ask the user to register an account.";
+        // first parameter is the model value the message will be applied to
+        // second parameter is the error message to be displayed
+        ModelState.AddModelError(nameof(appointment.UserEmail), errorMessage);
+        // returns to the create page with the data still filled in
         return View(appointment);
     }
 
@@ -146,11 +181,15 @@ public class AppointmentsController : Controller
 
         var appointment = await appointmentsContext
             .FirstOrDefaultAsync(m => m.AppointmentId == id);
+        var user = await _accountContext.Users.FirstOrDefaultAsync(m => m.Email == appointment.UserEmail);
 
         if (AppointmentValidation.IsAppointmentNull(appointment)) { return NotFound(); }
         if (AppointmentValidation.IsUserInvalid(appointment, User)) { return Unauthorized(); }
 
-        return View(appointment);
+        var viewModel = new ViewModel();
+        viewModel.UserAppointments = appointment;
+        viewModel.UserDetails = user;
+        return View(viewModel);
     }
 
     // POST: Appointments/Delete/5
