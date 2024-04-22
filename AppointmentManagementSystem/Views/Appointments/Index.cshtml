@@ -1,0 +1,86 @@
+﻿@model IEnumerable<AppointmentManagementSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Index";
+    bool showArvchived = ViewBag.ShowArchived;
+}
+
+<h1>Index</h1>
+<p>
+    <form asp-action="Index" asp-controller="Appointments" method="post">
+        <button type="submit" name="showArchived" value="false" class="btn btn-primary">Upcoming Appointments</button>
+        <button type="submit" name="showArchived" value="true" class="btn btn-primary">Archived Appointments</button>
+    </form>
+</p>
+
+<p>
+    @if (!showArvchived)
+    {
+        <a asp-action="Create">Create New</a>
+    }
+    else
+    {
+        <span>Create New (Disabled)</span>
+    }
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppointmentSubject)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{
+                        // Retrieve user's phone number based on their email
+                        var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                        var user = await userManager.FindByEmailAsync(item.UserEmail);
+                        if (user != null)
+                        {
+                            <p>@user.FirstName @user.LastName</p>
+                        }
+                        else
+                        {
+                            <p>N/A</p>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentSubject)
+                </td>
+                <td>
+                    @if (!showArvchived)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a>
+                    }
+                    @* @if (User.Identity.Name == "admin@admin.com") *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
+                    }
+                    <a asp-action="Delete" asp-route-id="@item.AppointmentId" asp-route-isArchived="@showArvchived">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

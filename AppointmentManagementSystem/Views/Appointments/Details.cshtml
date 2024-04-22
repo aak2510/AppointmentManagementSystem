@@ -1,0 +1,84 @@
+﻿@model AppointmentManagementSystem.ViewModels.ViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserDetails.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserDetails.FirstName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserDetails.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserDetails.LastName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserDetails.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserDetails.PhoneNumber)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserAppointments.UserEmail)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserAppointments.UserEmail)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserAppointments.AppointmentDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserAppointments.AppointmentTime)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentSubject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)
+        </dd>
+      
+
+       @*  <dt class="col-sm-2">
+            Phone Number
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                // Retrieve user's phone number based on their email
+                var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                var user = await userManager.FindByEmailAsync(Model.UserEmail);
+                if (user != null)
+                {
+                    @user.PhoneNumber
+                } else
+                {
+                    <p>N/A</p>
+                }
+            }
+        </dd> *@
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

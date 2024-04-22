@@ -12,13 +12,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using AppointmentManagementSystem.Areas.Data;
+using AppointmentManagementSystem.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using AppointmentManagementSystem.Services;
 
 namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
 {
@@ -71,6 +72,10 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Phone]
+            [Display(Name = "Phone number")]
+            public string PhoneNumber { get; set; }
+
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "First Name")]
@@ -127,18 +132,22 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
                 {
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
+                    PhoneNumber = Input.PhoneNumber,
                     UserName = Input.Email,
-                    Email = Input.Email,
+                    Email = Input.Email
                 };
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, PasswordHashing.Sha256(Input.Password));
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    //add default role
+                    await _userManager.AddToRoleAsync(user, "User");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

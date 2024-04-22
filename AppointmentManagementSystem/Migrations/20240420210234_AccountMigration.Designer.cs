@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AppointmentManagementSystem.Data.Migrations
+namespace AppointmentManagementSystem.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240418144403_AddFirstandLastNames")]
-    partial class AddFirstandLastNames
+    [DbContext(typeof(AccountDbContext))]
+    [Migration("20240420210234_AccountMigration")]
+    partial class AccountMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace AppointmentManagementSystem.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AppointmentManagementSystem.Areas.Data.AppUser", b =>
+            modelBuilder.Entity("AppointmentManagementSystem.Areas.Identity.Data.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -246,7 +246,7 @@ namespace AppointmentManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AppointmentManagementSystem.Areas.Data.AppUser", null)
+                    b.HasOne("AppointmentManagementSystem.Areas.Identity.Data.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -255,7 +255,7 @@ namespace AppointmentManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AppointmentManagementSystem.Areas.Data.AppUser", null)
+                    b.HasOne("AppointmentManagementSystem.Areas.Identity.Data.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -270,7 +270,7 @@ namespace AppointmentManagementSystem.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AppointmentManagementSystem.Areas.Data.AppUser", null)
+                    b.HasOne("AppointmentManagementSystem.Areas.Identity.Data.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,7 +279,7 @@ namespace AppointmentManagementSystem.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("AppointmentManagementSystem.Areas.Data.AppUser", null)
+                    b.HasOne("AppointmentManagementSystem.Areas.Identity.Data.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
