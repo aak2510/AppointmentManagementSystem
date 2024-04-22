@@ -1,28 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Security.Claims;
 
 namespace AppointmentManagementSystem.Services;
 
 public static class AppointmentValidation
 {
-    public static bool IsAppointmentNull(Appointment? appointment)
+    public static IActionResult CheckAppointmentValidation(this ControllerBase controller, Appointment appointment)
     {
+        // If the appointment doesn't exist
         if (appointment == null)
-            return true;
-        return false;
+        {
+            // Return a "Not Found" response
+            return controller.NotFound();
+        }
+
+        // Check if the user is not an admin and not the owner of the appointment
+        if (!controller.User.IsInRole("Admin") && appointment.UserEmail != controller.User.Identity.Name)
+        {
+            // If so, return an "Unauthorized" response
+            return controller.Unauthorized();
+        }
+
+        // If valid, return null
+        // This indicates it was successful
+        return null;
     }
 
-    public static bool IsUserInvalid(Appointment? appointment, ClaimsPrincipal? User)
-    {
-        if (appointment.UserEmail != User.Identity.Name && User.IsInRole("User"))
-        {
-            return true;
-        }
-        return false;
-    }
 }
