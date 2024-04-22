@@ -2,23 +2,27 @@
 
 public interface IAppointmentRepository
 {
-    /*An interface for Accessing appointments
-     *Include: all apointments and filtering appointments by id and search queries */
-
+    // Gets all upcoming appointments.
     IEnumerable<UpcomingAppointment> AllUpcomingAppointments { get; }
+
+    // Gets all archived appointments.
     IEnumerable<ArchivedAppointment> AllArchivedAppointments { get; }
 
-    
-    
-    public Appointment GetAppointmentById(int? id);
+    // Retrieves an appointment by its unique identifier.
+    Appointment GetAppointmentById(int? id);
 
-    public void AddAppointment(UpcomingAppointment? appointment);
+    // Adds a new upcoming appointment.
+    void AddAppointment(UpcomingAppointment? appointment);
 
-    public void UpdateAppointment(UpcomingAppointment appointment);
+    // Updates an existing upcoming appointment.
+    void UpdateAppointment(UpcomingAppointment appointment);
 
-    public void DeleteAppointmentById(int? id);
+    // Deletes an appointment by its unique identifier.
+    void DeleteAppointmentById(int? id);
 
-    public IEnumerable<Appointment> SearchAppointments(string searchQuery, IEnumerable<Appointment> appointments);
+    // Searches appointments based on the provided search query.
+    IEnumerable<Appointment> SearchAppointments(string searchQuery, IEnumerable<Appointment> appointments);
 
-    public void CheckForExpiredAppointments();
+    // Checks for expired appointments and archives them if necessary.
+    void CheckForExpiredAppointments();
 }
