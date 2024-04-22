@@ -14,14 +14,22 @@
     </form>
 </p>
 
+
 <p>
     <form asp-action="Index" asp-controller="Appointments" method="get">
         <div class="form-group">
             <label for="searchQuery">Search:</label>
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" />
+            <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" value="@ViewBag.PreviousSearchQuery" />
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
+        @if (!string.IsNullOrEmpty(ViewBag.PreviousSearchQuery))
+        {
+            <a asp-action="Index" asp-controller="Appointments" class="btn btn-primary">Clear Search</a>
+        }
     </form>
+</p>
+
+<p>
     @if (!isViewingArchived)
     {
         <a asp-action="Create">Create New</a>

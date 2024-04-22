@@ -57,6 +57,9 @@ public class AppointmentsController : Controller
         // Filter appointments based on search query
         if (!string.IsNullOrEmpty(searchQuery))
         {
+            // Keeps track of searches
+            ViewBag.PreviousSearchQuery = searchQuery;
+
             // Parse the search query as a date
             if (DateTime.TryParse(searchQuery, out DateTime searchDate))
             {
