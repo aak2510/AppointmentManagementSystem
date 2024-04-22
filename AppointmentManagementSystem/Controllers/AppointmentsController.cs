@@ -32,7 +32,6 @@ public class AppointmentsController : Controller
         _appointmentRepository.CheckForExpiredAppointments();
         
 
-
         // Set the viewing archive state in the repository
         if (showArchived.HasValue)
         {
@@ -45,15 +44,9 @@ public class AppointmentsController : Controller
             return NotFound();
 
         // Retrieve appointments based on whether to show archived or upcoming appointments
-        IEnumerable<Appointment> appointments;
-        if (ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
-        {
-            appointments = _appointmentRepository.AllArchivedAppointments;
-        } 
-        else
-        {
-            appointments = _appointmentRepository.AllUpcomingAppointments;
-        }
+        IEnumerable<Appointment> appointments = ArchiveStateSingleton.Instance.IsViewingArchivedAppointments ?
+            _appointmentRepository.AllArchivedAppointments:
+            _appointmentRepository.AllUpcomingAppointments;
 
         // If not admin, filter appointments for the current user
         if (!User.IsInRole("Admin"))
