@@ -54,16 +54,22 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             
-            //Custom attributes added for accounts
+            // Custom attributes added for accounts
+            // Users phoene number
+            // Must be a valid phone number
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            // Users First name
+            // Requires an input
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
+            // Users Last name
+            // Requires an input
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
@@ -72,11 +78,14 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(AppUser user)
         {
+            // Retrieve the username and phone number of the user 
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+            // Set the retrieved username to the Username property
             Username = userName;
 
+            // Create a new InputModel object and populate it with the retrieved user information
             // Adds the custom information
             Input = new InputModel
             {
@@ -86,9 +95,12 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
             };
         }
 
+        // Handles the HTTP GET request for loading user information
         public async Task<IActionResult> OnGetAsync()
         {
+            // Retrieve the current user
             var user = await _userManager.GetUserAsync(User);
+            // Check if the user is not found if so display this
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -98,23 +110,30 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+        //POST request for updating user information
         public async Task<IActionResult> OnPostAsync()
         {
+            // Retrieve the current user
             var user = await _userManager.GetUserAsync(User);
+            // Check if the user is not found if so display this
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            // If the model state is invalid then reload user information
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();
             }
 
+            // Retrieve the user's current phone number
+            // Checks if the input phone number is different from the current one
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
+                // Set the new phone number for the user
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
@@ -135,8 +154,10 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
                 user.LastName = Input.LastName;
             }
 
+            // Update the user's information in the database
             await _userManager.UpdateAsync(user);
 
+            // Refresh the user's sign-in cookie
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
