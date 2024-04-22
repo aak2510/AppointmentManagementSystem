@@ -94,9 +94,20 @@ public class AppointmentRepository : IAppointmentRepository
         }
     }
 
-    public IEnumerable<Appointment> SearchAppointments(string searchQuery)
+    public IEnumerable<Appointment> SearchAppointments(string searchQuery, IEnumerable<Appointment> appointments)
     {
-        throw new NotImplementedException();
+        // Parse the search query as a date
+        if (DateTime.TryParse(searchQuery, out DateTime searchDate))
+        {
+            // Search by appointment date
+            appointments = appointments.Where(a => a.AppointmentDate.Date == searchDate.Date);
+        } else
+        {
+            // Search by appointment subject partially (case-insensitive)
+            appointments = appointments.Where(a => a.AppointmentSubject.ToLower().Contains(searchQuery.ToLower()));
+        }
+
+        return appointments;
     }
 
 

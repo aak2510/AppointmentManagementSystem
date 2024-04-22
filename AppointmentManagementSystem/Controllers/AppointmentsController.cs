@@ -60,17 +60,9 @@ public class AppointmentsController : Controller
             // Keeps track of searches
             ViewBag.PreviousSearchQuery = searchQuery;
 
-            // Parse the search query as a date
-            if (DateTime.TryParse(searchQuery, out DateTime searchDate))
-            {
-                // Search by appointment date
-                appointments = appointments.Where(a => a.AppointmentDate.Date == searchDate.Date);
-            } 
-            else
-            {
-                // Search by appointment subject partially (case-insensitive)
-                appointments = appointments.Where(a => a.AppointmentSubject.ToLower().Contains(searchQuery.ToLower()));
-            }
+            // Filters provided appointments depending on a given query.
+            // This currently checks for dates and appointment subjects
+            appointments = _appointmentRepository.SearchAppointments(searchQuery,appointments);
         }
 
         // Order appointments by date and time

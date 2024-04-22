@@ -18,8 +18,7 @@ public interface IAppointmentRepository
 
     public void DeleteAppointmentById(int? id);
 
-    //Appointment? GetAppointmentById(int? appointmentId);
-    IEnumerable<Appointment> SearchAppointments(string searchQuery);
+    public IEnumerable<Appointment> SearchAppointments(string searchQuery, IEnumerable<Appointment> appointments);
 
     public void CheckForExpiredAppointments();
 }
