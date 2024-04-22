@@ -3,11 +3,17 @@
 
 @{
     ViewData["Title"] = "Index";
+    //A local variable that gets if we are viewing the archived appointments or not
     bool isViewingArchived = ArchiveStateSingleton.Instance.IsViewingArchivedAppointments;
 }
 
 <h1>Index</h1>
+
+<!-- Buttons for toggling between upcoming and archived appointments -->
 <p>
+    <!-- On clicking a button the action is submitted to the index action method
+        of the Appointments controller using HTTP POST method
+    -->
     <form asp-action="Index" asp-controller="Appointments" method="post">
         <button type="submit" name="showArchived" value="false" class="btn btn-primary">Upcoming Appointments</button>
         <button type="submit" name="showArchived" value="true" class="btn btn-primary">Archived Appointments</button>
@@ -16,12 +22,19 @@
 
 
 <p>
+    <!-- Submitting search queries -->
     <form asp-action="Index" asp-controller="Appointments" method="get">
         <div class="form-group">
+            <!-- Takes an input from the user and submits this to the index page -->
             <label for="searchQuery">Search:</label>
+            <!-- View bag is used here to keep track and display the previous query after a search -->
             <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" value="@ViewBag.PreviousSearchQuery" />
         </div>
+        <!-- Button for submitting the search form -->
         <button type="submit" class="btn btn-primary">Search</button>
+        <!-- Check if there was a previous search query 
+            If so provide a button that will clear the search and reset the index page
+        -->
         @if (!string.IsNullOrEmpty(ViewBag.PreviousSearchQuery))
         {
             <a asp-action="Index" asp-controller="Appointments" class="btn btn-primary">Clear Search</a>
@@ -30,13 +43,12 @@
 </p>
 
 <p>
+    <!-- Allows for the creation of upcoming appointments 
+        But not archived appointments
+    -->
     @if (!isViewingArchived)
     {
         <a asp-action="Create">Create New</a>
-    }
-    else
-    {
-        <span>Create New (Disabled)</span>
     }
 </p>
 
@@ -57,14 +69,17 @@
         </tr>
     </thead>
     <tbody>
+        <!-- Loops through all the given appointments in the views model and displays their information-->
         @foreach (var item in Model)
         {
             <tr>
                 <td>
                     @{
-                        // Retrieve user's phone number based on their email
+                        // Retrieve an instance of the UserManager service
                         var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                        // Attempt to find a user with the provided email
                         var user = await userManager.FindByEmailAsync(item.UserEmail);
+                        // If a user was found display their first and last name
                         if (user != null)
                         {
                             <p>@user.FirstName @user.LastName</p>
@@ -85,11 +100,12 @@
                     @Html.DisplayFor(modelItem => item.AppointmentSubject)
                 </td>
                 <td>
-                    @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
+                    <!-- Edit is not displayed for archived appointments -->
+                    @if (!isViewingArchived)
                     {
                         <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a>
                     }
-                    @* @if (User.Identity.Name == "admin@admin.com") *@
+                    <!-- Admins can access the details of appointments but users can not -->
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
