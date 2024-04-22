@@ -27,7 +27,6 @@ public class AppointmentsController : Controller
         _accountContext = accountContext;
     }
 
-
     // GET
     // Handles requests to view appointments,
     // filtering and displaying them based on various criteria
