@@ -15,6 +15,13 @@
 </p>
 
 <p>
+    <form asp-action="Index" asp-controller="Appointments" method="get">
+        <div class="form-group">
+            <label for="searchQuery">Search:</label>
+            <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
     @if (!isViewingArchived)
     {
         <a asp-action="Create">Create New</a>

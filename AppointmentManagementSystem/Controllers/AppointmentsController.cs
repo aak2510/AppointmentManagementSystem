@@ -26,7 +26,7 @@ public class AppointmentsController : Controller
 
 
     // GET: Appointments
-    public async Task<IActionResult> Index(bool? showArchived)
+    public async Task<IActionResult> Index(bool? showArchived, string? searchQuery)
     {
         //Check for expired appointments
         _appointmentRepository.CheckForExpiredAppointments();
@@ -52,6 +52,22 @@ public class AppointmentsController : Controller
         if (!User.IsInRole("Admin"))
         {
             appointments = appointments.Where(a => a.UserEmail == userEmail);
+        }
+
+        // Filter appointments based on search query
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            // Parse the search query as a date
+            if (DateTime.TryParse(searchQuery, out DateTime searchDate))
+            {
+                // Search by appointment date
+                appointments = appointments.Where(a => a.AppointmentDate.Date == searchDate.Date);
+            } 
+            else
+            {
+                // Search by appointment subject partially (case-insensitive)
+                appointments = appointments.Where(a => a.AppointmentSubject.ToLower().Contains(searchQuery.ToLower()));
+            }
         }
 
         // Order appointments by date and time
