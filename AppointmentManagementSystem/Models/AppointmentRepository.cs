@@ -128,10 +128,10 @@ public class AppointmentRepository : IAppointmentRepository
     // Checks for appointments that have expired and archives them
     public void CheckForExpiredAppointments()
     {
-        // Gets the current UTC time
-        // This keeps cosistency within the application as
-        // DateTime.Now would use the current local system time
-        var currentDateTime = DateTime.UtcNow;
+        // Gets the current local system time
+        // As this is not a live application this keeps it consistent
+        // With whatever system it is run on
+        var currentDateTime = DateTime.Now;
 
         // Retrieve appointments that have an appointment date before the current date or 
         // have an appointment date equal to the current date but with a time before the current time

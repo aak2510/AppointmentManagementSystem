@@ -54,6 +54,7 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             
+            //Custom attributes added for accounts
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -76,6 +77,7 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            // Adds the custom information
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
@@ -121,11 +123,13 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            // Updates the first name if has been changed
             if(Input.FirstName != user.FirstName)
             {
                 user.FirstName = Input.FirstName;
             }
 
+            // Updates the last name if has been changed
             if (Input.LastName != user.LastName)
             {
                 user.LastName = Input.LastName;

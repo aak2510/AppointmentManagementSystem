@@ -72,6 +72,8 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            //Custom attributes added to the registration page
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -128,6 +130,8 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+
+                // Creates a new user using the inputed information
                 var user = new AppUser
                 {
                     FirstName = Input.FirstName,
@@ -140,6 +144,9 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // The entered password is encrypted here so that when logging in the
+                // inputted password will be encyrpted and compared against the stored encrypted password
                 var result = await _userManager.CreateAsync(user, PasswordHashing.Sha256(Input.Password));
 
                 if (result.Succeeded)
