@@ -1,65 +1,63 @@
 ﻿@model AppointmentManagementSystem.Models.Appointment
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create an Appointment";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center">@ViewData["Title"]</h1>
+            <h4 class="text-center">Enter the Details</h4>
+            <hr />
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="AppointmentId" />
 
-<h4>Appointment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AppointmentId" />
-            @*If the Admin is logged in, then we need to display the email field for them to create and appointment*@
-            @*Need to change this to RBAC*@
-            @if (User.IsInRole("Admin"))
-            {
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        <label asp-for="UserEmail" class="control-label">User Email</label>
+                        <input asp-for="UserEmail" class="form-control" />
+                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
+                }
+
                 <div class="form-group">
-                    <label asp-for="UserEmail" class="control-label"></label>
-                    <input asp-for="UserEmail" class="form-control" />
-                    <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    <label asp-for="AppointmentSubject" class="control-label">Subject/Reason</label>
+                    <input asp-for="AppointmentSubject" class="form-control" />
+                    <span asp-validation-for="AppointmentSubject" class="text-danger"></span>
                 </div>
-            }
-            else
-            {
-                @*If another user has logged in, then we don't want them to change the email and set the email field for them*@
-                <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
-            }
 
+                <div class="form-group">
+                    <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
+                    <input asp-for="AppointmentDate" class="form-control" />
+                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="AppointmentSubject" class="control-label"></label>
-                <input asp-for="AppointmentSubject" class="form-control" />
-                <span asp-validation-for="AppointmentSubject" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="AppointmentTime" class="control-label">Appointment Time</label>
+                    <input asp-for="AppointmentTime" class="form-control" />
+                    <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-success mt-2">Create Appointment</button>
+                </div>
+            </form>
+            <div class="text-center">
+                <a asp-action="Index" class="btn btn-danger mt-1">Back to Appointments</a>
             </div>
-
-            <div class="form-group">
-                <label asp-for="AppointmentDate" class="control-label"></label>
-                @*Left in to avoid epoch timing*@
-                <input asp-for="AppointmentDate" class="form-control"  value="@DateTime.Now.Date" />
-                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="AppointmentTime" class="control-label"></label>
-                <input asp-for="AppointmentTime" class="form-control" value="@DateTime.Now.TimeOfDay" />
-                <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
