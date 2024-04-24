@@ -10,6 +10,8 @@ namespace AppointmentManagementSystem.Services
         private Timer? _tTimer;
         //Store the Service Scope Factory
         private readonly IServiceScopeFactory _oScopeFactory;
+        //The timespan period for the Timer
+        private TimeSpan tsTimerPeriod = TimeSpan.FromSeconds(10);
 
         public SmsAutomationService(IServiceScopeFactory oScopeFactory)
         {
@@ -19,8 +21,7 @@ namespace AppointmentManagementSystem.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //Set up timer to check every hour
-            //_tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, TimeSpan.FromHours(1));
-            _tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, tsTimerPeriod);
             return Task.CompletedTask;
         }
 
