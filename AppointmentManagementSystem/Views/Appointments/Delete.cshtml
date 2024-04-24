@@ -13,7 +13,7 @@
             <div>
                 <h4 class="text-center">Appointment Details</h4>
                 <dl class="row">
-                    <!-- Display appointment details -->
+                    <!-- Displays the information of the appointment that is being deleted-->
                     <div class="col-sm-6 text-center">
                         <dt>First Name:</dt>
                         <dd>@Html.DisplayFor(model => model.UserDetails.FirstName)</dd>
@@ -38,7 +38,10 @@
                         <dd>@Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)</dd>
                     </div>
                 </dl>
-                <!-- Form for deleting the appointment -->
+                <!-- Button provided to confirm deletion
+                    This submits the Id of the appointment to delete to the condifrmed delete action method in the
+                    appointments controller
+                -->
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="UserAppointments.AppointmentId" />
                     <div class="form-group text-center">
