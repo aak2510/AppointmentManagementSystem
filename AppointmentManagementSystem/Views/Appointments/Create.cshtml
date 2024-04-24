@@ -13,7 +13,8 @@
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="AppointmentId" />
-
+                @*If the Admin is logged in, then we need to display the email field for them to create and appointment*@
+                @*Need to change this to RBAC*@
                 @if (User.IsInRole("Admin"))
                 {
                     <div class="form-group">
@@ -24,6 +25,7 @@
                 }
                 else
                 {
+                    @*If another user has logged in, then we don't want them to change the email and set the email field for them*@
                     <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
                 }
 
