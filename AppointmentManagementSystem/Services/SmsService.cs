@@ -33,36 +33,39 @@ namespace AppointmentManagementSystem.Services
 
             foreach (Appointment oAppointment in ieAppointments)
             {
-                string sMessage = CreateSms(oAppointment);
-                SendSms(sMessage);
+                SendSms(CreateSms(oAppointment));
                 /*if (oAppointment.AppointmentTime >= startTime && oAppointment.AppointmentTime <= endTime)
                 {
-                    string sMessage = CreateSms(oAppointment);
-                    SendSms(sMessage);
+                    SendSms(CreateSms(oAppointment));
                 }*/
             }
         }
 
         public string CreateSms(Appointment oAppointment)
         {
-            //Store the list of users
-            List<AppUser> vUsers = _accountDbContext.Users.ToList();
-
             //Store the Appointment Date
-            DateTime dtDate = oAppointment.AppointmentDate;
+            DateTime dtDate = oAppointment.AppointmentDate.Date;
+            DateOnly doDate = new DateOnly(dtDate.Year, dtDate.Month, dtDate.Day);
             //Store the Appointment Time
-            DateTime dtTime = oAppointment.AppointmentTime;
+            DateTime tsTime = oAppointment.AppointmentTime;
             //Store the Appointment Subject
             string sSubject = oAppointment.AppointmentSubject;
             //Store the User Email
             string sEmail = oAppointment.UserEmail;
             //Using the email, fetch the necessary data from the AspNetUsers table in the Accounts database
-            string sFirstName = "";
-            string sLastName = "";
-            string sPhoneNumber = "";
-            //Create the message
-            return $"Message Sent to {sPhoneNumber} on {DateTime.UtcNow}:\n" +
-                   $"Dear {sFirstName} {sLastName}, you have an appointment on {dtDate} at {dtTime} for a {sSubject}";
+            var vUser = _accountDbContext.Users.FirstOrDefault(u => u.Email == sEmail);
+
+            //Handle the case where no user is found with the associated email
+            if (vUser == null) return $"No vUser found with email: {sEmail}";
+
+            //Extract the user's first name, last name, and phone number
+            string sFirstName = vUser.FirstName;
+            string sLastName = vUser.LastName;
+            string? sPhoneNumber = vUser.PhoneNumber;
+
+            //Create the SMS message
+            return $"Message sent to {sPhoneNumber} at {DateTime.UtcNow}:\n" +
+                   $"Dear {sFirstName} {sLastName}, you have an appointment on {doDate} at {tsTime.ToString("HH:mm")} for a {sSubject}.";
         }
 
         public void SendSms(string sMessage)
