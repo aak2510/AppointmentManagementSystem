@@ -1,118 +1,79 @@
-﻿@using AppointmentManagementSystem.Models.ArchiveState
+@using AppointmentManagementSystem.Models.ArchiveState
 @model IEnumerable<AppointmentManagementSystem.Models.Appointment>
 
 @{
-    ViewData["Title"] = "Index";
-    //A local variable that gets if we are viewing the archived appointments or not
+    ViewData["Title"] = "Appointments";
     bool isViewingArchived = ArchiveStateSingleton.Instance.IsViewingArchivedAppointments;
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
-<!-- Buttons for toggling between upcoming and archived appointments -->
-<p>
-    <!-- On clicking a button the action is submitted to the index action method
-        of the Appointments controller
-    -->
-    <form asp-action="Index" asp-controller="Appointments" method="post">
-        <button type="submit" name="showArchived" value="false" class="btn btn-primary">Upcoming Appointments</button>
-        <button type="submit" name="showArchived" value="true" class="btn btn-primary">Archived Appointments</button>
-    </form>
-</p>
-
-
-<p>
-    <!-- Submitting search queries -->
-    <form asp-action="Index" asp-controller="Appointments" method="get">
-        <div class="form-group">
-            <!-- Takes an input from the user and submits this to the index page -->
-            <label for="searchQuery">Search:</label>
-            <!-- View bag is used here to keep track and display the previous query after a search -->
-            <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" value="@ViewBag.PreviousSearchQuery" />
-        </div>
-        <!-- Button for submitting the search form -->
-        <button type="submit" class="btn btn-primary">Search</button>
-        <!-- Check if there was a previous search query 
-            If so provide a button that will clear the search and reset the index page
-        -->
-        @if (!string.IsNullOrEmpty(ViewBag.PreviousSearchQuery))
-        {
-            <a asp-action="Index" asp-controller="Appointments" class="btn btn-primary">Clear Search</a>
-        }
-    </form>
-</p>
-
-<p>
-    <!-- Allows for the creation of upcoming appointments 
-        But not archived appointments
-    -->
+<!-- Create new appointment button -->
+<div class="mb-3">
     @if (!isViewingArchived)
     {
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-primary m-1">Create an Appointment</a>
     }
-</p>
+    else
+    {
+        <span>Create New (Disabled)</span>
+    }
+    <p>
+        <form asp-action="Index" asp-controller="Appointments" method="post">
+            <button type="submit" name="showArchived" value="false" class="btn btn-outline-warning m-1">Upcoming Appointments</button>
+            <button type="submit" name="showArchived" value="true" class="btn btn-outline-info m-1">Archived Appointments</button>
+        </form>
+    </p>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppointmentSubject)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Loops through all the given appointments in the views model and displays their information-->
-        @foreach (var item in Model)
-        {
+<!-- Table for displaying appointments -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered text-center">
+        <thead>
             <tr>
-                <td>
-                    @{
-                        // Retrieve an instance of the UserManager service
-                        var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
-                        // Attempt to find a user with the provided email
-                        var user = await userManager.FindByEmailAsync(item.UserEmail);
-                        // If a user was found display their first and last name
-                        if (user != null)
-                        {
-                            <p>@user.FirstName @user.LastName</p>
-                        }
-                        else
-                        {
-                            <p>N/A</p>
-                        }
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AppointmentSubject)
-                </td>
-                <td>
-                    <!-- Edit is not displayed for archived appointments -->
-                    @if (!isViewingArchived)
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a>
-                    }
-                    <!-- Admins can access the details of appointments but users can not -->
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
-                    }
-                    <a asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
-                </td>
+                <th>Full Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Subject</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @{
+                            // Retrieve user's phone number based on their email
+                            var userManager = Context.RequestServices.GetRequiredService<UserManager<AppUser>>();
+                            var user = await userManager.FindByEmailAsync(item.UserEmail);
+                            if (user != null)
+                            {
+                                <p>@user.FirstName @user.LastName</p>
+                            }
+                            else
+                            {
+                                <p>N/A</p>
+                            }
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.AppointmentDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AppointmentTime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AppointmentSubject)</td>
+                    <td>
+                        @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.AppointmentId" class="btn btn-success mr-1">Edit</a>
+                        }
+                        @* @if (User.Identity.Name == "admin@admin.com") *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Details" asp-route-id="@item.AppointmentId" class="btn btn-info mr-1">Details</a>
+                        }
+                        <a asp-action="Delete" asp-route-id="@item.AppointmentId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
