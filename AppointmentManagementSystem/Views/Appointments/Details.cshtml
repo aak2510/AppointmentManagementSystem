@@ -11,6 +11,7 @@
     <h4>Appointment</h4>
     <hr />
     <dl class="row">
+        <!-- Displays a list of the appointments details -->
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserDetails.FirstName)
         </dt>
@@ -61,9 +62,13 @@
     </dl>
 </div>
 <div>
+    <!-- If this appointment is not archived we can also chose to edit the appointment
+        This routes to the edit action model passing in this appointments id
+    -->
     @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
     {
         <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId">Edit</a>
     }
+    <!-- We can also choose to return back to the index page from here -->
     <a asp-action="Index">Back to List</a>
 </div>

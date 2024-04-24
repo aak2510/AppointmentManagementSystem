@@ -1,6 +1,4 @@
-﻿using AppointmentManagementSystem.Areas.Identity.Data;
-using AppointmentManagementSystem.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using AppointmentManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentManagementSystem.Data;
@@ -10,9 +8,12 @@ public class AppointmentDbContext : DbContext
     public AppointmentDbContext(DbContextOptions<AppointmentDbContext> options)
         : base(options)
     {
+
     }
 
+    // DbSet for storing upcoming appointments
     public DbSet<UpcomingAppointment> appointments { get; set; }
+    // DbSet for storing archived appointments
     public DbSet<ArchivedAppointment> archivedAppointments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

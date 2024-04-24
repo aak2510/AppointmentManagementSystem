@@ -29,7 +29,6 @@
                 <input type="hidden" asp-for="UserEmail" class="form-control" value="@UserManager.GetUserAsync(User).Result.Email" readonly />
             }
 
-
             <div class="form-group">
                 <label asp-for="AppointmentSubject" class="control-label"></label>
                 <input asp-for="AppointmentSubject" class="form-control" />
@@ -39,7 +38,7 @@
             <div class="form-group">
                 <label asp-for="AppointmentDate" class="control-label"></label>
                 @*Left in to avoid epoch timing*@
-                <input asp-for="AppointmentDate" class="form-control"  value="@DateTime.Now.Date" />
+                <input asp-for="AppointmentDate" class="form-control" value="@DateTime.Now.Date" />
                 <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
 
