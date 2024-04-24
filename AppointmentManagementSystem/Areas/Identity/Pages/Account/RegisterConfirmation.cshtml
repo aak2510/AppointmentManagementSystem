@@ -1,23 +1,29 @@
 ﻿@page
-@model RegisterConfirmationModel
+@model LogoutModel
 @{
-    ViewData["Title"] = "Register Confirmation";
+    ViewData["Title"] = "Log out";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h1 class="card-title">@ViewData["Title"]</h1>
                 </div>
                 <div class="card-body">
-                    <p>
-                        Click the button below to confirm your account. ⬇️
-                    </p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="@Model.EmailConfirmationUrl" class="btn btn-primary">Confirm Account</a>
+                    @{
+                        if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                <button type="submit" class="btn btn-danger">Log Out</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <p>You have successfully logged out of the application.</p>
+                        }
+                    }
                 </div>
             </div>
         </div>
