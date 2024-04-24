@@ -34,26 +34,32 @@
         </form>
     </p>
 
-    <p>
-        <!-- Submitting search queries -->
-        <form asp-action="Index" asp-controller="Appointments" method="get">
-            <div class="form-group">
-                <!-- Takes an input from the user and submits this to the index page -->
-                <label for="searchQuery">Search:</label>
-                <!-- View bag is used here to keep track and display the previous query after a search -->
-                <input type="text" id="searchQuery" name="searchQuery" placeholder="Search by subject or date" class="form-control" value="@ViewBag.PreviousSearchQuery" />
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="Index" asp-controller="Appointments" method="get">
+                    <div class="input-group mb-3">
+                        <input type="text" id="searchQuery" name="searchQuery" class="form-control" placeholder="Search by Subject or Date" aria-label="Search" aria-describedby="searchButton" value="@ViewBag.PreviousSearchQuery">
+                        <button class="btn btn-success" type="submit" id="searchButton">Search</button>
+                        <!-- Check if there was a previous search query -->
+                        @if (!string.IsNullOrEmpty(ViewBag.PreviousSearchQuery))
+                        {
+                            <button class="btn btn-danger" type="button" onclick="clearSearch()">Clear Search</button>
+                        }
+                    </div>
+                </form>
             </div>
-            <!-- Button for submitting the search form -->
-            <button type="submit" class="btn btn-primary">Search</button>
-            <!-- Check if there was a previous search query
-                If so provide a button that will clear the search and reset the index page
-            -->
-            @if (!string.IsNullOrEmpty(ViewBag.PreviousSearchQuery))
-            {
-                <a asp-action="Index" asp-controller="Appointments" class="btn btn-primary">Clear Search</a>
-            }
-        </form>
-    </p>
+        </div>
+    </div>
+
+    @* JavaScript function to clear the search query *@
+    <script>
+        function clearSearch() {
+            document.getElementById('searchQuery').value = '';
+            document.getElementById('searchButton').click();
+        }
+    </script>
+
 </div>
 
 
