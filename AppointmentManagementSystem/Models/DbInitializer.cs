@@ -22,15 +22,15 @@ public static class DbInitializer
             AppointmentContext.appointments.AddRange
             (
                 new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 29), AppointmentTime = new DateTime(2024, 1, 1, 9, 0, 0), UserEmail = "test@test.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 29), AppointmentTime = new DateTime(2024, 1, 1, 10, 30, 0), UserEmail = "test@test.com" },
+                new UpcomingAppointment { AppointmentSubject = "Interview", AppointmentDate = new DateTime(2024, 4, 29), AppointmentTime = new DateTime(2024, 1, 1, 10, 30, 0), UserEmail = "test@test.com" },
                 new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 28), AppointmentTime = new DateTime(2024, 1, 1, 14, 15, 0), UserEmail = "test@test.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 27), AppointmentTime = new DateTime(2024, 1, 1, 16, 45, 0), UserEmail = "test@test.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 23), AppointmentTime = new DateTime(2024, 1, 1, 11, 0, 0), UserEmail = "test@test.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 26), AppointmentTime = new DateTime(2024, 1, 1, 13, 45, 0), UserEmail = "email@email.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 26), AppointmentTime = new DateTime(2024, 1, 1, 15, 30, 0), UserEmail = "email@email.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 25), AppointmentTime = new DateTime(2024, 1, 1, 17, 15, 0), UserEmail = "email@email.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 25), AppointmentTime = new DateTime(2024, 1, 1, 9, 45, 0), UserEmail = "email@email.com" },
-                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 4, 26), AppointmentTime = new DateTime(2024, 1, 1, 12, 0, 0), UserEmail = "email@email.com" }
+                new UpcomingAppointment { AppointmentSubject = "Workshop", AppointmentDate = new DateTime(2024, 5, 1), AppointmentTime = new DateTime(2024, 1, 1, 16, 45, 0), UserEmail = "test@test.com" },
+                new UpcomingAppointment { AppointmentSubject = "Review", AppointmentDate = new DateTime(2024, 5, 6), AppointmentTime = new DateTime(2024, 1, 1, 11, 0, 0), UserEmail = "test@test.com" },
+                new UpcomingAppointment { AppointmentSubject = "Training", AppointmentDate = new DateTime(2024, 5, 3), AppointmentTime = new DateTime(2024, 1, 1, 13, 45, 0), UserEmail = "email@email.com" },
+                new UpcomingAppointment { AppointmentSubject = "Meeting", AppointmentDate = new DateTime(2024, 5, 4), AppointmentTime = new DateTime(2024, 1, 1, 15, 30, 0), UserEmail = "email@email.com" },
+                new UpcomingAppointment { AppointmentSubject = "Follow-up", AppointmentDate = new DateTime(2024, 5, 2), AppointmentTime = new DateTime(2024, 1, 1, 17, 15, 0), UserEmail = "email@email.com" },
+                new UpcomingAppointment { AppointmentSubject = "Briefing", AppointmentDate = new DateTime(2024, 5, 1), AppointmentTime = new DateTime(2024, 1, 1, 9, 45, 0), UserEmail = "email@email.com" },
+                new UpcomingAppointment { AppointmentSubject = "Client pitch", AppointmentDate = new DateTime(2024, 4, 29), AppointmentTime = new DateTime(2024, 1, 1, 12, 0, 0), UserEmail = "email@email.com" }
             );
         }
 
