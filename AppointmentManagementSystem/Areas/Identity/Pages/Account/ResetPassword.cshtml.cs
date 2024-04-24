@@ -73,8 +73,10 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
 
         }
 
+        // GET request for displaying the password reset page
         public IActionResult OnGet(string code = null)
         {
+            // Check if a code is provided for password reset
             if (code == null)
             {
                 return BadRequest("A code must be supplied for password reset.");
@@ -89,6 +91,7 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
             }
         }
 
+        //POST request for resetting a user's password
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -96,6 +99,8 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
                 return Page();
             }
 
+            // Find the user by email 
+            // Redirects to the ResetPasswordConfirmation page without revealing that the user does not exist
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
@@ -103,12 +108,15 @@ namespace AppointmentManagementSystem.Areas.Identity.Pages.Account
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
+            // Reset the user's password asynchronously
+            // The inputted password is taken and encrypted so we store the hashed password
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, PasswordHashing.Sha256(Input.Password));
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
+            // If resetting the password failed, add errors to the model state and return the page with these errors
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);

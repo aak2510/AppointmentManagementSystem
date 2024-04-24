@@ -11,6 +11,7 @@
     <h4>Appointments</h4>
     <hr />
     <dl class="row">
+        <!-- Displays the information of the appointment that is being deleted-->
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserDetails.FirstName)
         </dt>
@@ -57,7 +58,10 @@
             @Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)
         </dd>
     </dl>
-
+    <!-- Button provided to confirm deletion
+        This submits the Id of the appointment to delete to the condifrmed delete action method in the
+        appointments controller
+    -->
     <form asp-action="Delete">
         <input type="hidden" asp-for="UserAppointments.AppointmentId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace AppointmentManagementSystem.Controllers
 {
+    //nothing added here, default implementation
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
