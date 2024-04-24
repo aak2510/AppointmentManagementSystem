@@ -65,12 +65,26 @@ namespace AppointmentManagementSystem.Services
 
             //Create the SMS message
             return $"Message sent to {sPhoneNumber} at {DateTime.UtcNow}:\n" +
-                   $"Dear {sFirstName} {sLastName}, you have an appointment on {doDate} at {tsTime.ToString("HH:mm")} for a {sSubject}.";
+                   $"Dear {sFirstName} {sLastName}, you have an appointment on {doDate} at {tsTime.ToString("HH:mm")} for a {sSubject}.\n";
         }
 
         public void SendSms(string sMessage)
         {
             Console.WriteLine("SendSms function in the SmsService class is invoked\n\n" + sMessage);
+
+            //Specify the path to the log file
+            string sLogFilePath = @"SmsLog.txt";
+
+            try
+            {
+                //Append the message to the log file
+                File.AppendAllText(sLogFilePath, sMessage + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                //Print to console if there is an exception
+                Console.WriteLine($"Error writing to log file: {ex.Message}");
+            }
         }
     }
 }
