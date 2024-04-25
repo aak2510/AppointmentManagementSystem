@@ -1,6 +1,7 @@
 using AppointmentManagementSystem.Areas.Identity.Data;
 using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
+using AppointmentManagementSystem.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,11 @@ public class Program
         // This enables dependency injection, allowing components to easily obtain instances of AppointmentRepository
         // without needing to create them directly.
         builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+
+        //Register the SMS service
+        builder.Services.AddScoped<ISmsService, SmsService>();
+        //Register the SMS Automation hosted service
+        builder.Services.AddHostedService<SmsAutomationService>();
 
         // Configure AppointmentDbContext with SQL Server database connection
         builder.Services.AddDbContext<AppointmentDbContext>(options =>

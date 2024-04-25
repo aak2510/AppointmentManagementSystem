@@ -1,4 +1,5 @@
 ﻿using AppointmentManagementSystem.Areas.Identity.Data;
+using AppointmentManagementSystem.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +12,5 @@ public class AccountDbContext : IdentityDbContext<AppUser>
         : base(options)
     {
 
-    }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
     }
 }
