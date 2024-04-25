@@ -1,30 +1,33 @@
-﻿using AppointmentManagementSystem.Areas.Identity.Data;
-using AppointmentManagementSystem.Data;
+﻿using AppointmentManagementSystem.Data;
 using AppointmentManagementSystem.Models;
-using System;
 
 namespace AppointmentManagementSystem.Services
 {
     public class SmsService : ISmsService
     {
+        #region Global Variables
+        //Store the number of hours that the SMS notification needs to be sent before the appointment
+        private int _iDurationBeforeAppt = 48;
         //Store the Accounts dataset
-        private readonly AccountDbContext _accountDbContext;
+        private readonly AccountDbContext _oAccountDbContext;
         //Store the Appointments dataset
-        private readonly AppointmentDbContext _appointmentDbContext;
+        private readonly AppointmentDbContext _oAppointmentDbContext;
+        #endregion
 
-        public SmsService(AccountDbContext accountDbContext, AppointmentDbContext appointmentDbContext)
+        #region Constructor
+        public SmsService(AccountDbContext oAccountDbContext, AppointmentDbContext oAppointmentDbContext)
         {
-            _accountDbContext = accountDbContext;
-            _appointmentDbContext = appointmentDbContext;
+            _oAccountDbContext = oAccountDbContext;
+            _oAppointmentDbContext = oAppointmentDbContext;
         }
+        #endregion
 
+        #region Methods
         public void StoreAppointmentsDue()
         {
-            //Store the number of hours that the SMS notification needs to be sent before the appointment
-            int iDurationBeforeAppt = 48;
 
-            //Store the list of appointments that are due in iDurationBeforeAppt hours
-            IEnumerable<Appointment> ieAppointments = _appointmentDbContext.appointments.ToList();
+            //Store the list of appointments that are due in _iDurationBeforeAppt hours
+            IEnumerable<Appointment> ieAppointments = _oAppointmentDbContext.appointments.ToList();
 
             Console.WriteLine("ieAppointments: " + ieAppointments.Count());
 
@@ -63,7 +66,7 @@ namespace AppointmentManagementSystem.Services
                 double dbAbsoluteDifference = Math.Abs(tsDifference.TotalHours);
                 Console.WriteLine("Time Difference: " + tsDifference.Hours.ToString());
                 //If the appointment is within the next 48 hours
-                if (dbAbsoluteDifference <= iDurationBeforeAppt)
+                if (dbAbsoluteDifference <= _iDurationBeforeAppt)
                 {
                     //Create and send a SMS notification message to the user
                     SendSms(CreateSms(oAppointment));
@@ -83,13 +86,13 @@ namespace AppointmentManagementSystem.Services
             //Store the User Email
             string sEmail = oAppointment.UserEmail;
 
-            //IEnumerable<AppUser> ieUsers = _accountDbContext.Users.ToList();
+            //IEnumerable<AppUser> ieUsers = _oAccountDbContext.Users.ToList();
 
             //Using the email, fetch the necessary data from the AspNetUsers table in the Accounts database
-            var vUser = _accountDbContext.Users.FirstOrDefault(u => u.Email == sEmail);
+            var vUser = _oAccountDbContext.Users.FirstOrDefault(u => u.Email == sEmail);
 
             //Handle the case where no user is found with the associated email
-            if (vUser == null) return $"No vUser found with email: {sEmail}";
+            if (vUser == null) return $"No user found with email: {sEmail}";
 
             //Extract the user's first name, last name, and phone number
             string sFirstName = vUser.FirstName;
@@ -119,5 +122,6 @@ namespace AppointmentManagementSystem.Services
                 Console.WriteLine($"Error writing to log file: {ex.Message}");
             }
         }
+        #endregion
     }
 }

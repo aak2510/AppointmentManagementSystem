@@ -1,27 +1,28 @@
-﻿
-using AppointmentManagementSystem.Data;
-using AppointmentManagementSystem.Models;
-
-namespace AppointmentManagementSystem.Services
+﻿namespace AppointmentManagementSystem.Services
 {
     public class SmsAutomationService : IHostedService, IDisposable
     {
+        #region Global Variables
+        //The timespan period for the Timer
+        private TimeSpan _tsTimerPeriod = TimeSpan.FromSeconds(30);
         //Timer for the checking if a SMS notification needs to be sent
         private Timer? _tTimer;
         //Store the Service Scope Factory
         private readonly IServiceScopeFactory _oScopeFactory;
-        //The timespan period for the Timer
-        private TimeSpan tsTimerPeriod = TimeSpan.FromSeconds(10);
+        #endregion
 
+        #region Constructor
         public SmsAutomationService(IServiceScopeFactory oScopeFactory)
         {
             _oScopeFactory = oScopeFactory;
         }
+        #endregion
 
+        #region Methods
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //Set up timer to check every hour
-            _tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, tsTimerPeriod);
+            _tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, _tsTimerPeriod);
             return Task.CompletedTask;
         }
 
@@ -46,5 +47,6 @@ namespace AppointmentManagementSystem.Services
             //Dispose the time
             _tTimer?.Dispose();
         }
+        #endregion
     }
 }

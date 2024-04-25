@@ -1,10 +1,10 @@
-﻿using AppointmentManagementSystem.Models;
-
-namespace AppointmentManagementSystem.Services
+﻿namespace AppointmentManagementSystem.Services
 {
     public interface ISmsService
     {
+        #region Methods
         void StoreAppointmentsDue();
         void SendSms(string sMessage);
+        #endregion
     }
 }
