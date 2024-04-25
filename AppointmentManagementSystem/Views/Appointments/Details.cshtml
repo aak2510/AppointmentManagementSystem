@@ -1,74 +1,53 @@
-﻿
-@model AppointmentManagementSystem.ViewModels.ViewModel
+﻿@model AppointmentManagementSystem.ViewModels.ViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Appointment Details";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center">@ViewData["Title"]</h1>
+            <h3 class="text-center">Check appointment details</h3>
+            <hr />
+            <div>
+                <h4 class="text-center">Appointment Information</h4>
+                <dl class="row">
+                    <!-- Display appointment details -->
+                    <div class="col-sm-6 text-center">
+                        <dt>First Name:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserDetails.FirstName)</dd>
 
-<div>
-    <h4>Appointment</h4>
-    <hr />
-    <dl class="row">
-        <!-- Displays a list of the appointments details -->
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserDetails.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserDetails.FirstName)
-        </dd>
+                        <dt>Last Name:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserDetails.LastName)</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserDetails.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserDetails.LastName)
-        </dd>
+                        <dt>Phone Number:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserDetails.PhoneNumber)</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserDetails.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserDetails.PhoneNumber)
-        </dd>
+                        <dt>User Email:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserAppointments.UserEmail)</dd>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <dt>Appointment Date:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserAppointments.AppointmentDate)</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserAppointments.UserEmail)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserAppointments.UserEmail)
-        </dd>
+                        <dt>Appointment Time:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserAppointments.AppointmentTime)</dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserAppointments.AppointmentDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserAppointments.AppointmentTime)
-        </dd>
-
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserAppointments.AppointmentSubject)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)
-        </dd>
-    </dl>
-</div>
-<div>
-    <!-- If this appointment is not archived we can also chose to edit the appointment
-        This routes to the edit action model passing in this appointments id
-    -->
-    @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId">Edit</a>
-    }
-    <!-- We can also choose to return back to the index page from here -->
-    <a asp-action="Index">Back to List</a>
+                        <dt>Appointment Subject:</dt>
+                        <dd>@Html.DisplayFor(model => model.UserAppointments.AppointmentSubject)</dd>
+                    </div>
+                </dl>
+            </div>
+            <div class="text-center">
+                <!-- If this appointment is not archived, provide the option to edit it -->
+                @if (!ArchiveStateSingleton.Instance.IsViewingArchivedAppointments)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model?.UserAppointments.AppointmentId" class="btn btn-success">Edit Appointment</a>
+                }
+                <!-- Provide a button to return back to the index page -->
+                <a asp-action="Index" class="btn btn-danger">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>
