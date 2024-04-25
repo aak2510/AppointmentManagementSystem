@@ -35,6 +35,28 @@ Appointment Management System is a web application built using ASP .NET Core MVC
 There was another repository that was utilised during the creation of this app, where we constructed proof of concepts before integrating them into our project. Please see the following repositories:
 - [https://github.com/aak2510/AppointmentManagementSystemPOC.git]
 
+## Assumptions
+- Application runs off of local system time (this impacts the auto deletion of expired appointments)
+
+## Start-up guide
+
+Upon downloading the application, you will need to run two commands within the Package Manager Console:
+
+- `update-database -Context AccountDbContext`
+- `update-database -Context AppointmentDbContext`
+
+After doing this, the application should open without issue. There are some initial accounts seeded into the database upon initialization.
+
+**Admin account**
+- Email: admin@admin.com
+- Password: Secure@1
+
+**User accounts**
+1. - Email: test@test.com
+   - Password: Secure@2
+
+2. - Email: email@email.com
+   - Password: Secure@3
 
 ## License
 
