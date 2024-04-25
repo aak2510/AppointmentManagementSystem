@@ -36,7 +36,9 @@ There was another repository that was utilised during the creation of this app, 
 - [https://github.com/aak2510/AppointmentManagementSystemPOC.git]
 
 ## Assumptions
-- Application runs off of local system time (this impacts the auto deletion of expired appointments)
+
+- Application runs off of local system time (this impacts the auto deletion of expired appointments).
+- SMS is sent to a text file `SmsLog.txt` in the project directory.
 
 ## Start-up guide
 
