@@ -12,6 +12,9 @@ namespace AppointmentManagementSystem.Services
         private readonly AccountDbContext _oAccountDbContext;
         //Store the Appointments dataset
         private readonly AppointmentDbContext _oAppointmentDbContext;
+        //Specify the path to the log file
+        private readonly string _sLogFilePath = @"SmsLog.txt";
+        private readonly string _sSentSmsFilePath = @"SentSmsLog.txt";
         #endregion
 
         #region Constructor
@@ -25,29 +28,23 @@ namespace AppointmentManagementSystem.Services
         #region Methods
         public void StoreAppointmentsDue()
         {
-
             //Store the list of appointments that are due in _iDurationBeforeAppt hours
             IEnumerable<Appointment> ieAppointments = _oAppointmentDbContext.appointments.ToList();
 
-            Console.WriteLine("ieAppointments: " + ieAppointments.Count());
-
             //Use a HashSet to track appointment times that have already been processed
-            HashSet<DateTime> hsProcessedAppointmentTimes = new HashSet<DateTime>();
+            HashSet<int> hsProcessedAppointmentIDs = GetProcessedAppointmentIds();
 
-            /*foreach (Appointment oAppointment in ieAppointments)
-            {
-                //Check if the appointment time has already been processed
-                if (!hsProcessedAppointmentTimes.Contains(oAppointment.AppointmentTime))
-                {
-                    //Mark the appointment time as processed
-                    hsProcessedAppointmentTimes.Add(oAppointment.AppointmentTime);
-                    //Send the SMS notification
-                    SendSms(CreateSms(oAppointment));
-                }
-            }*/
+            Console.WriteLine("ieAppointments: " + ieAppointments.Count());
 
             foreach (Appointment oAppointment in ieAppointments)
             {
+                //Check if the appointment time has already been processed
+                if (hsProcessedAppointmentIDs.Contains(oAppointment.AppointmentId))
+                {
+                    //Skip this appointment
+                    continue;
+                }
+
                 //Combine the Appointment Date and Appointment Time and store into a DateTime object
                 DateTime dtAppointment = new DateTime(
                     oAppointment.AppointmentDate.Year,
@@ -70,6 +67,9 @@ namespace AppointmentManagementSystem.Services
                 {
                     //Create and send a SMS notification message to the user
                     SendSms(CreateSms(oAppointment));
+                    //Mark the appointment time as processed
+                    hsProcessedAppointmentIDs.Add(oAppointment.AppointmentId);
+                    SaveProcessedAppointmentIds(hsProcessedAppointmentIDs);
                 }
             }
         }
@@ -108,19 +108,33 @@ namespace AppointmentManagementSystem.Services
         {
             Console.WriteLine("SendSms function in the SmsService class is invoked\n\n" + sMessage);
 
-            //Specify the path to the log file
-            string sLogFilePath = @"SmsLog.txt";
-
             try
             {
                 //Append the message to the log file
-                File.AppendAllText(sLogFilePath, sMessage + Environment.NewLine);
+                File.AppendAllText(_sLogFilePath, sMessage + Environment.NewLine);
             }
             catch (Exception ex)
             {
                 //Print to console if there is an exception
                 Console.WriteLine($"Error writing to log file: {ex.Message}");
             }
+        }
+
+        private HashSet<int> GetProcessedAppointmentIds()
+        {
+            if (File.Exists(_sSentSmsFilePath))
+            {
+                return new HashSet<int>(File.ReadAllLines(_sSentSmsFilePath).Select(int.Parse));
+            }
+            else
+            {
+                return new HashSet<int>();
+            }
+        }
+
+        private void SaveProcessedAppointmentIds(HashSet<int> appointmentIds)
+        {
+            File.WriteAllLines(_sSentSmsFilePath, appointmentIds.Select(id => id.ToString()));
         }
         #endregion
     }

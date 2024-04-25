@@ -4,7 +4,7 @@
     {
         #region Global Variables
         //The timespan period for the Timer
-        private TimeSpan _tsTimerPeriod = TimeSpan.FromSeconds(30);
+        private TimeSpan _tsTimerPeriod = TimeSpan.FromSeconds(10);
         //Timer for the checking if a SMS notification needs to be sent
         private Timer? _tTimer;
         //Store the Service Scope Factory
@@ -21,7 +21,7 @@
         #region Methods
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //Set up timer to check every hour
+            //Set up timer to check periodically
             _tTimer = new Timer(InvokeSmsSystem, null, TimeSpan.Zero, _tsTimerPeriod);
             return Task.CompletedTask;
         }
