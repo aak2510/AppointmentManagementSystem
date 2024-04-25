@@ -49,3 +49,5 @@ Hi John Doe, you have an appointment on 26/04/2024 at 06:17 for a Meeting. See y
 Message sent to 9876543210 at 25/04/2024 09:12:43:
 Hi Test User, you have an appointment on 26/04/2024 at 09:12 for a SMS. See you soon!
 
+No user found with email: test@test.com
+No user found with email: test@test.com

@@ -1,5 +1,4 @@
-﻿
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
@@ -31,7 +30,8 @@
             </li>
         }
 
-    } else
+    } 
+    else
     {
         <li class="nav-item">
             <a class="nav-link text-white btn btn-dark my-1 mx-1 btn border-light" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
