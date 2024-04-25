@@ -52,3 +52,6 @@ Hi Test User, you have an appointment on 26/04/2024 at 09:12 for a SMS. See you 
 No user found with email: test@test.com
 No user found with email: test@test.com
 No user found with email: test@test.com
+Message sent to 9876543210 at 25/04/2024 15:06:10:
+Hi Test User, you have an appointment on 24/04/2024 at 11:25 for a TEST1. See you soon!
+
