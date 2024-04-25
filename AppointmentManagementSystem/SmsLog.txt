@@ -51,3 +51,4 @@ Hi Test User, you have an appointment on 26/04/2024 at 09:12 for a SMS. See you 
 
 No user found with email: test@test.com
 No user found with email: test@test.com
+No user found with email: test@test.com

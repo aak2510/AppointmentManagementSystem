@@ -6,107 +6,108 @@ using System.ComponentModel.DataAnnotations;
 using AppointmentManagementSystem.Areas.Identity.Data;
 using AppointmentManagementSystem.Models;
 using AppointmentManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage
+namespace AppointmentManagementSystem.Areas.Identity.Pages.Account.Manage;
+
+[Authorize(Roles = "User")]
+public class DeletePersonalDataModel : PageModel
 {
-    public class DeletePersonalDataModel : PageModel
+    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly ILogger<DeletePersonalDataModel> _logger;
+    private readonly IAppointmentRepository _appointmentRepository;
+
+    public DeletePersonalDataModel(
+        UserManager<AppUser> userManager,
+        SignInManager<AppUser> signInManager,
+        ILogger<DeletePersonalDataModel> logger,
+        IAppointmentRepository appointmentRepository)
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly ILogger<DeletePersonalDataModel> _logger;
-        private readonly IAppointmentRepository _appointmentRepository;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _logger = logger;
 
-        public DeletePersonalDataModel(
-            UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger,
-            IAppointmentRepository appointmentRepository)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
+        _appointmentRepository = appointmentRepository;
+    }
 
-            _appointmentRepository = appointmentRepository;
-        }
+    /// <summary>
+    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+    ///     directly from your code. This API may change or be removed in future releases.
+    /// </summary>
+    [BindProperty]
+    public InputModel Input { get; set; }
 
+    /// <summary>
+    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+    ///     directly from your code. This API may change or be removed in future releases.
+    /// </summary>
+    public class InputModel
+    {
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
+    /// <summary>
+    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+    ///     directly from your code. This API may change or be removed in future releases.
+    /// </summary>
+    public bool RequirePassword { get; set; }
+
+    public async Task<IActionResult> OnGet()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
+            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public bool RequirePassword { get; set; }
+        RequirePassword = await _userManager.HasPasswordAsync(user);
+        return Page();
+    }
 
-        public async Task<IActionResult> OnGet()
+    public async Task<IActionResult> OnPostAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            RequirePassword = await _userManager.HasPasswordAsync(user);
-            return Page();
+            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        RequirePassword = await _userManager.HasPasswordAsync(user);
+        if (RequirePassword)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            // Inputted password must be converted to hashed password for checking 
+            if (!await _userManager.CheckPasswordAsync(user, PasswordHashing.Sha256(Input.Password)))
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                ModelState.AddModelError(string.Empty, "Incorrect password.");
+                return Page();
             }
-
-            RequirePassword = await _userManager.HasPasswordAsync(user);
-            if (RequirePassword)
-            {
-                // Inputted password must be converted to hashed password for checking 
-                if (!await _userManager.CheckPasswordAsync(user, PasswordHashing.Sha256(Input.Password)))
-                {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
-                    return Page();
-                }
-            }
-
-
-            // Delete appointment information for given user by email
-            _appointmentRepository.DeleteAllAppointmentByEmail(user.Email);
-
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
-            }
-
-            await _signInManager.SignOutAsync();
-
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
-
-            return Redirect("~/");
         }
+
+
+        // Delete appointment information for given user by email
+        _appointmentRepository.DeleteAllAppointmentByEmail(user.Email);
+
+        var result = await _userManager.DeleteAsync(user);
+        var userId = await _userManager.GetUserIdAsync(user);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+        }
+
+        await _signInManager.SignOutAsync();
+
+        _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+
+        return Redirect("~/");
     }
 }
