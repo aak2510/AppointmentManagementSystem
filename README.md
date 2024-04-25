@@ -33,7 +33,7 @@ Appointment Management System is a web application built using ASP .NET Core MVC
 
 ##
 There was another repository that was utilised during the creation of this app, where we constructed proof of concepts before integrating them into our project. Please see the following repositories:
-- [https://github.com/aak2510/AppointmentManagementSystem.git](https://github.com/aak2510/AppointmentManagementSystemPOC.git)
+- [https://github.com/aak2510/AppointmentManagementSystemPOC.git]
 
 
 ## License
