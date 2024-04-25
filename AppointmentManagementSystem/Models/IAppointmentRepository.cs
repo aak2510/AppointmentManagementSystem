@@ -20,6 +20,8 @@ public interface IAppointmentRepository
     // Deletes an appointment by its unique identifier.
     void DeleteAppointmentById(int? id);
 
+    void DeleteAllAppointmentByEmail(string email);
+
     // Searches appointments based on the provided search query.
     IEnumerable<Appointment> SearchAppointments(string searchQuery, IEnumerable<Appointment> appointments);
 

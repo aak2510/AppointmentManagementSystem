@@ -46,8 +46,7 @@ public class AppointmentRepository : IAppointmentRepository
         {
             // Retrieve appointment by ID from archived appointments if viewing archived
             return _context.archivedAppointments.Find(id);
-        }
-        else
+        } else
         {
             // Retrieve appointment by ID from upcoming appointments if not viewing archived
             return _context.appointments.Find(id);
@@ -89,8 +88,7 @@ public class AppointmentRepository : IAppointmentRepository
                 _context.archivedAppointments.Remove(archivedAppointment);
                 _context.SaveChanges();
             }
-        } 
-        else
+        } else
         {
             // Retrieve upcoming appointment by ID
             var upcomingAppointment = _context.appointments.Find(id);
@@ -162,5 +160,32 @@ public class AppointmentRepository : IAppointmentRepository
         }
 
         return appointments;
+    }
+
+    public void DeleteAllAppointmentByEmail(string email)
+    {
+        IEnumerable<UpcomingAppointment> upcomingAppointments = _context.appointments.Where(a => a.UserEmail == email);
+        IEnumerable<ArchivedAppointment> archivedAppointments = _context.archivedAppointments.Where(a => a.UserEmail == email);
+
+        // Loops through each appointment and deletes them
+        foreach (UpcomingAppointment appointment in upcomingAppointments)
+        {
+            if (appointment != null)
+            {
+                // Remove the archived appointment
+                _context.appointments.Remove(appointment);
+            }
+        }
+
+        // Loops through each appointment and deletes them
+        foreach (ArchivedAppointment appointment in archivedAppointments)
+        {
+            if (appointment != null)
+            {
+                // Remove the archived appointment
+                _context.archivedAppointments.Remove(appointment);
+            }
+        }
+        _context.SaveChanges();
     }
 }
