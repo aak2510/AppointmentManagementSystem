@@ -25,18 +25,20 @@ Appointment Management System is a web application built using ASP .NET Core MVC
 
 ## Contributors
 
-- **Moeez**
 - **Anish**
+- **Moeez**
 - **Tom**
 - **Riya**
 
 
 ##
 There was another repository that was utilised during the creation of this app, where we constructed proof of concepts before integrating them into our project. Please see the following repositories:
-- [https://github.com/aak2510/AppointmentManagementSystemPOC.git]
+- https://github.com/aak2510/AppointmentManagementSystemPOC.git
 
 ## Assumptions
-- Application runs off of local system time (this impacts the auto deletion of expired appointments)
+
+- Application runs off of local system time (this impacts the auto-deletion of expired appointments).
+- SMS is sent to a text file `SmsLog.txt` in the project directory.
 
 ## Start-up guide
 
